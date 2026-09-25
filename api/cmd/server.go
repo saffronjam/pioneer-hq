@@ -10,6 +10,7 @@ import (
 
 	authctx "api/internal/auth"
 	"api/internal/graph"
+	"api/internal/planner"
 	"api/internal/version"
 	"api/pkg/config"
 	"api/pkg/db"
@@ -25,7 +26,12 @@ import (
 // (queries/mutations over POST/GET, subscriptions over websocket) behind the
 // auth middleware, plus /healthz.
 func (app *App) buildHandler(authSvc *svcauth.Service) http.Handler {
+	plannerService := planner.NewService(db.DB.Store)
+	if app.poller != nil {
+		app.poller.SetPlanner(plannerService)
+	}
 	resolver := &graph.Resolver{
+		Planner:  plannerService,
 		Store:    graph.NewStoreAdapter(db.DB.Store),
 		Snapshot: app.poller,
 		Poller:   app.poller,

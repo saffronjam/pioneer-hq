@@ -1,0 +1,14 @@
+set shell := ["bash", "-euo", "pipefail", "-c"]
+set working-directory := '.'
+
+[private]
+default:
+    @just --list --unsorted
+
+[doc('Create the Python environment (standard library only)')]
+venv:
+    python3 -m venv venv
+
+[doc('Fetch the FRM catalog and extract a sample of automated recipes')]
+fetch address sample_size="10": venv
+    venv/bin/python fetch.py {{ quote(address) }} --sample-size {{ quote(sample_size) }}

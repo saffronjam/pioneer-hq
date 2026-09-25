@@ -1,6 +1,7 @@
 package frm_client
 
 import (
+	"api/internal/planner"
 	"api/models/models"
 	"api/pkg/log"
 	"api/service/frm_client/frm_models"
@@ -26,6 +27,8 @@ const (
 
 // Client handles interactions with the Satisfactory Mod API
 type Client struct {
+	plannerMu           sync.RWMutex
+	plannerUnlocks      []planner.Unlock
 	httpClient          *http.Client
 	apiIsUp             bool
 	apiStatusLock       sync.RWMutex

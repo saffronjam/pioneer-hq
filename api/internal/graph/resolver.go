@@ -3,6 +3,7 @@ package graph
 import (
 	"context"
 
+	"api/internal/planner"
 	"api/internal/session"
 	"api/internal/store"
 	"api/models/models"
@@ -49,6 +50,7 @@ type Poller interface {
 
 // Resolver is the gqlgen root resolver holding all dependencies.
 type Resolver struct {
+	Planner  *planner.Service
 	Store    GraphStore
 	Snapshot Snapshotter
 	Poller   Poller

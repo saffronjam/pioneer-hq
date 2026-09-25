@@ -4,7 +4,7 @@ import { useAuth } from 'src/contexts/auth/useAuth';
 import { sessionApi } from 'src/services/sessionApi';
 import { SessionContext, SessionContextType } from './SessionContext';
 
-const SELECTED_SESSION_KEY = 'satisfactory-dashboard-selected-session';
+const SELECTED_SESSION_KEY = 'pioneer-hq-selected-session';
 const SESSION_POLL_INTERVAL = 20000; // Poll session status every 20 seconds
 
 interface SessionProviderProps {

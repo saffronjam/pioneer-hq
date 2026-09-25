@@ -1,6 +1,7 @@
 package frm_client
 
 import (
+	"api/internal/planner"
 	"api/models/models"
 	"api/service/frm_client/frm_models"
 	"context"
@@ -15,6 +16,21 @@ func (client *Client) ListSchematics(ctx context.Context) ([]models.Schematic, e
 		return nil, fmt.Errorf("failed to get schematics: %w", err)
 	}
 
+	if len(rawSchematics) > 0 {
+		unlocked := map[string]bool{}
+		for _, raw := range rawSchematics {
+			for _, r := range raw.Recipes {
+				unlocked[r.ClassName] = unlocked[r.ClassName] || raw.Purchased
+			}
+		}
+		values := []planner.Unlock{}
+		for id, value := range unlocked {
+			values = append(values, planner.Unlock{RecipeID: id, Unlocked: value})
+		}
+		client.plannerMu.Lock()
+		client.plannerUnlocks = values
+		client.plannerMu.Unlock()
+	}
 	// Filter to milestones only and convert to model type
 	schematics := make([]models.Schematic, 0, len(rawSchematics))
 	for _, raw := range rawSchematics {

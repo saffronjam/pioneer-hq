@@ -28,7 +28,7 @@ type endpointSet struct {
 	Player,
 	Trains, TrainStation, Drone, DroneStation, Truck, TruckStation, Tractor, Explorer,
 	Belts, SplitterMerger, Pipes, PipeJunctions, Hypertube, HyperEntrance,
-	StorageInv, SpaceElevator, HubTerminal, RadarTower, ResourceNode, Schematics endpoint
+	StorageInv, SpaceElevator, HubTerminal, RadarTower, ResourceNode, Schematics, Recipes endpoint
 }
 
 // empty renders a fixed empty list, which is a legal FRM answer. Endpoints the mock
@@ -79,6 +79,7 @@ var served = endpointSet{
 	endpoint{"/getRadarTower", true, func(s *Snapshot) any { return s.static.RadarTowers }},
 	endpoint{"/getResourceNode", true, func(s *Snapshot) any { return s.static.ResourceNodes }},
 	endpoint{"/getSchematics", true, func(s *Snapshot) any { return s.static.Schematics }},
+	endpoint{"/getRecipes", true, func(s *Snapshot) any { return s.static.Recipes }},
 }
 
 // routes enumerates served by reflection rather than by a second hand-written list,

@@ -1,6 +1,7 @@
 package worker
 
 import (
+	"api/internal/planner"
 	sessionid "api/internal/session"
 	"api/internal/store"
 	"api/models/models"
@@ -150,6 +151,7 @@ type connState struct {
 // SessionManager is the single in-process supervisor that owns one poll loop per
 // active session and is the sole producer onto the eventbus + LatestStore.
 type SessionManager struct {
+	planner    *planner.Service
 	bus        *eventbus.ChannelBus
 	latest     *eventbus.LatestStore
 	publishers map[string]*publisherState // sessionID -> publisher state
@@ -570,6 +572,17 @@ func (sm *SessionManager) publishLoop(ctx context.Context, sess *models.Session,
 			return
 		}
 
+		if event.Type == models.SatisfactoryEventSchematics && sm.planner != nil {
+			if pc, ok := frmClient.(plannerClient); ok {
+				if unlocks := pc.PlannerUnlocks(); len(unlocks) > 0 {
+					sm.withPlannerSession(ctx, sess.ID, state, func() {
+						if err := sm.planner.UpdateUnlocks(ctx, sess.ID, unlocks); err != nil {
+							log.Debugf("Recipe unlock sync: %v", err)
+						}
+					})
+				}
+			}
+		}
 		if isHistoryEnabledType(event.Type) {
 			gameTimeID := state.gameTimeTracker.CurrentGameTime()
 			if gameTimeID > 0 {
@@ -632,6 +645,9 @@ func (sm *SessionManager) publishLoop(ctx context.Context, sess *models.Session,
 		return
 	}
 
+	if pc, ok := frmClient.(plannerClient); ok && sm.planner != nil && !sess.IsDisconnected && !mismatched {
+		sm.wg.Go(func() { sm.syncPlanner(ctx, sess, state, pc) })
+	}
 	<-ctx.Done()
 	log.Infof("Publisher stopped for session: %s (%s)", sess.Name, sess.ID)
 }

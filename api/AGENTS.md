@@ -16,7 +16,7 @@ internal/session/    session.ID
 internal/version/    the ldflags-stamped Version string
 models/models/       domain types (the tygo source for the frontend's apiTypes.ts)
 models/mode/         dev | prod | test
-pkg/config/          YAML config + SD_* env overrides
+pkg/config/          YAML config + PIONEER_HQ_* env overrides
 pkg/db/              the *sql.DB singleton and its DSN pragmas
 pkg/eventbus/        in-process fan-out + latest-value store -> AGENTS.md
 pkg/log/             zap setup, level control
@@ -59,7 +59,7 @@ just migrate-version
 - Idiomatic Go: `gofmt -s`, errors checked immediately and wrapped with `fmt.Errorf("...: %w", err)`,
   happy path left-aligned, exported symbols documented, mixedCaps.
 - Never maintain backward compatibility — delete the old path.
-- Config is read once into `config.Config` (`pkg/config`). Env overrides are `SD_*`.
+- Config is read once into `config.Config` (`pkg/config`). Env overrides are `PIONEER_HQ_*`.
 - Domain types live in `models/models` and are the tygo source; changing one changes the frontend's
   `apiTypes.ts`, so run `just tygo`.
 - The `models` package must not import `internal/graph` — mapping is one-directional, domain →
@@ -70,7 +70,7 @@ just migrate-version
 `cmd/server.go` builds a plain `http.ServeMux`:
 
 - `/graphql` — the gqlgen handler behind `authMiddleware`, which attaches the response writer, the
-  client IP, and (when the `sd_access_token` cookie validates) the authenticated caller to the
+  client IP, and (when the `pioneer-hq-access-token` cookie validates) the authenticated caller to the
   context. It never rejects; the `@auth` directive enforces.
 - `/healthz`, `/version` — plain handlers.
 - everything else — `registerStatic` (`cmd/static.go`): the embedded SPA with an index.html fallback,

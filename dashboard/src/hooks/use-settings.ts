@@ -16,7 +16,7 @@ export type SettingsProps = {
 };
 
 export function useSettings({ reloadEverySecond = true }: SettingsProps = {}) {
-  const settingsKey = 'satisfactory-dashboard-settings';
+  const settingsKey = 'pioneer-hq-settings';
 
   const parseFromStorageOrDefault = () => {
     return JSON.parse(localStorage.getItem(settingsKey) || JSON.stringify(defaultSettings));

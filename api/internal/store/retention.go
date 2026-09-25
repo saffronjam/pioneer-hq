@@ -56,7 +56,7 @@ type HistoryRetentionStore interface {
 
 // RunHistoryRetention prunes each active series to currentGameTime - window on a
 // fixed interval. The window is re-read from settings every tick so the stored
-// SD_MAX_SAMPLE_GAME_DURATION value can change without a restart. window <= 0
+// PIONEER_HQ_MAX_SAMPLE_GAME_DURATION value can change without a restart. window <= 0
 // disables pruning. It blocks until ctx is cancelled.
 func RunHistoryRetention(ctx context.Context, logger *slog.Logger, store HistoryRetentionStore, frontier HistoryFrontier, interval time.Duration) {
 	if interval <= 0 {

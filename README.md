@@ -1,12 +1,12 @@
-<h1 align="center">Satisfactory Dashboard</h1>
+<h1 align="center">Pioneer HQ</h1>
 
 <p align="center">
-  Your whole factory, live, from one binary.
+  Plan, build, and monitor your Satisfactory factory.
 </p>
 
 <p align="center">
-  <a href="https://github.com/saffronjam/satisfactory-dashboard/actions/workflows/ci.yaml"><img src="https://github.com/saffronjam/satisfactory-dashboard/actions/workflows/ci.yaml/badge.svg" alt="CI" /></a>
-  <a href="https://github.com/saffronjam/satisfactory-dashboard/releases"><img src="https://img.shields.io/github/v/release/saffronjam/satisfactory-dashboard?display_name=tag&sort=semver" alt="Release" /></a>
+  <a href="https://github.com/saffronjam/pioneer-hq/actions/workflows/ci.yaml"><img src="https://github.com/saffronjam/pioneer-hq/actions/workflows/ci.yaml/badge.svg" alt="CI" /></a>
+  <a href="https://github.com/saffronjam/pioneer-hq/releases"><img src="https://img.shields.io/github/v/release/saffronjam/pioneer-hq?display_name=tag&sort=semver" alt="Release" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" /></a>
   <img src="https://img.shields.io/badge/go-1.25-00ADD8.svg?logo=go&logoColor=white" alt="Go 1.25" />
   <img src="https://img.shields.io/badge/react-18-61DAFB.svg?logo=react&logoColor=white" alt="React 18" />
@@ -15,10 +15,10 @@
 ---
 
 <div align="center">
-  <img src="docs/images/dashboard.png" alt="Satisfactory Dashboard" width="800">
+  <img src="docs/images/dashboard.png" alt="Pioneer HQ" width="800">
 </div>
 
-A real-time dashboard for a Satisfactory factory: power circuits and battery banks, production and
+A production planner and real-time dashboard for a Satisfactory factory: power circuits and battery banks, production and
 sink statistics, trains, drones, trucks and their stations, players, milestones, and an interactive
 map of the whole world. Everything updates itself over GraphQL subscriptions, and every chart has
 history behind it.
@@ -69,11 +69,11 @@ Worth setting for anything beyond a local run:
 
 | Variable | Purpose |
 | --- | --- |
-| `SD_EXTERNAL_URL` | locks the websocket `Origin` check to your hostname, and marks the auth cookie `Secure` when it is `https://` |
-| `SD_VERSION` | pins a released image tag, without the leading `v` (`1.0.0` for release `v1.0.0`) |
-| `SD_ASSETS_REF` | pins the map tiles artifact version |
-| `SD_DATA_DIR` | where the first-run setup token is written (defaults to the database's directory) |
-| `SD_MAX_SAMPLE_GAME_DURATION` | how much game-time history to retain |
+| `PIONEER_HQ_EXTERNAL_URL` | locks the websocket `Origin` check to your hostname, and marks the auth cookie `Secure` when it is `https://` |
+| `PIONEER_HQ_VERSION` | pins a released image tag, without the leading `v` (`1.0.0` for release `v1.0.0`) |
+| `PIONEER_HQ_ASSETS_REF` | pins the map tiles artifact version |
+| `PIONEER_HQ_DATA_DIR` | where the first-run setup token is written (defaults to the database's directory) |
+| `PIONEER_HQ_MAX_SAMPLE_GAME_DURATION` | how much game-time history to retain |
 
 ## First run
 
@@ -122,7 +122,7 @@ Releasing is one annotated tag. Its body becomes a draft GitHub release, and the
 into the build — you can read it at the bottom of the sidebar and on `/version`, so you always know
 what is actually deployed.
 
-Images are published to `ghcr.io/saffronjam/satisfactory-dashboard`. The map and icon tiles are
+Images are published to `ghcr.io/saffronjam/pioneer-hq`. The map and icon tiles are
 distributed separately as a versioned OCI artifact pulled with [ORAS](https://oras.land/), which is
 why the app image stays small and no deployment ever needs git-lfs.
 

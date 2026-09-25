@@ -100,6 +100,18 @@ jobs:
           go-version: "1.25"
           cache-dependency-path: api/go.sum
 
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.5"
+
+      - name: Install frontend dependencies
+        run: bun install --frozen-lockfile
+        working-directory: dashboard
+
+      - name: Frontend behavior tests
+        run: bun run test
+        working-directory: dashboard
+
       - name: Go tests
         run: go test ./... -race -count=1
         working-directory: api
@@ -166,7 +178,7 @@ jobs:
         id: meta-app
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/satisfactory-dashboard
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/pioneer-hq
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}
@@ -190,7 +202,7 @@ jobs:
         id: meta-seed
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/satisfactory-dashboard-seed
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/pioneer-hq-seed
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}

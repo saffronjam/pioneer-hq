@@ -135,7 +135,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               {children}
             </main>
           </SidebarInset>
-          <SessionInitOverlay />
+          {!location.pathname.startsWith('/calculator') && <SessionInitOverlay />}
         </SidebarProvider>
         <SessionStatusBar />
       </div>

@@ -17,24 +17,33 @@ type Querier interface {
 	CreateSession(ctx context.Context, arg CreateSessionParams) error
 	DeleteAllTokens(ctx context.Context) error
 	DeleteAuthPassword(ctx context.Context) error
+	DeletePlannerDependencies(ctx context.Context, diagramID string) error
+	DeletePlannerDiagram(ctx context.Context, arg DeletePlannerDiagramParams) (int64, error)
 	DeleteSession(ctx context.Context, id session.ID) error
 	DeleteToken(ctx context.Context, tokenHash auth.TokenHash) error
 	EnsureInstance(ctx context.Context) error
 	GetAuthPassword(ctx context.Context) (GetAuthPasswordRow, error)
 	GetInstance(ctx context.Context) (GetInstanceRow, error)
+	GetPlannerCatalog(ctx context.Context, sessionID string) (string, error)
+	GetPlannerConsumers(ctx context.Context, targetID string) ([]string, error)
 	GetSession(ctx context.Context, id session.ID) (Session, error)
 	GetSetting(ctx context.Context, key string) (Setting, error)
 	GetValidToken(ctx context.Context, arg GetValidTokenParams) (AuthToken, error)
+	InsertPlannerDependency(ctx context.Context, arg InsertPlannerDependencyParams) error
+	InsertPlannerDiagram(ctx context.Context, arg InsertPlannerDiagramParams) error
 	InsertToken(ctx context.Context, arg InsertTokenParams) error
+	ListPlannerDiagrams(ctx context.Context, sessionID string) ([]PlannerDiagram, error)
 	ListSessions(ctx context.Context) ([]Session, error)
 	ListSettings(ctx context.Context) ([]Setting, error)
 	PruneHistoryOlderThan(ctx context.Context, arg PruneHistoryOlderThanParams) (int64, error)
 	QueryHistoryBucketed(ctx context.Context, arg QueryHistoryBucketedParams) ([]QueryHistoryBucketedRow, error)
 	QueryHistoryRaw(ctx context.Context, arg QueryHistoryRawParams) ([]QueryHistoryRawRow, error)
 	RunTokenPrune(ctx context.Context, now time.Time) (int64, error)
+	SavePlannerCatalog(ctx context.Context, arg SavePlannerCatalogParams) error
 	SetAuthMode(ctx context.Context, authMode string) error
 	SetBootstrapTokenHash(ctx context.Context, bootstrapTokenHash *string) error
 	TouchToken(ctx context.Context, arg TouchTokenParams) error
+	UpdatePlannerDiagram(ctx context.Context, arg UpdatePlannerDiagramParams) (int64, error)
 	UpdateSession(ctx context.Context, arg UpdateSessionParams) error
 	UpsertAuthPassword(ctx context.Context, hash string) error
 	UpsertHistoryPoint(ctx context.Context, arg UpsertHistoryPointParams) error

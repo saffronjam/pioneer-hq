@@ -495,6 +495,7 @@ type SchematicCost struct {
 }
 
 type Schematic struct {
+	Recipes     []PlannerRecipe `json:"Recipes"`
 	ID          string          `json:"ID"`
 	Name        string          `json:"Name"`
 	TechTier    int             `json:"TechTier"`

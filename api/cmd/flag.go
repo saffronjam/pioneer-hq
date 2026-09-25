@@ -44,7 +44,7 @@ func ParseFlags() *Options {
 
 func parseMigrateFlags(args []string) *Options {
 	usage := func() {
-		fmt.Fprintln(os.Stderr, "usage: satisfactory-dashboard migrate up|down|version [steps] [-mode dev|prod|test]")
+		fmt.Fprintln(os.Stderr, "usage: pioneer-hq migrate up|down|version [steps] [-mode dev|prod|test]")
 		os.Exit(2)
 	}
 

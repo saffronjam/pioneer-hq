@@ -162,6 +162,22 @@ export function AppSidebar({ data, slots }: AppSidebarProps) {
             </SidebarGroupContent>
           </SidebarGroup>
 
+          {subItems.length > 0 && (
+            <SidebarGroup className="mt-4">
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {subItems.map((item) => (
+                    <NavItemComponent
+                      key={item.path || item.title}
+                      item={item}
+                      pathname={pathname}
+                    />
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          )}
+
           <SidebarSeparator />
           <SidebarGroup>
             <SidebarGroupContent>
@@ -220,25 +236,6 @@ export function AppSidebar({ data, slots }: AppSidebarProps) {
               </div>
             </SidebarGroupContent>
           </SidebarGroup>
-
-          {subItems.length > 0 && (
-            <>
-              <SidebarSeparator />
-              <SidebarGroup>
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                    {subItems.map((item) => (
-                      <NavItemComponent
-                        key={item.path || item.title}
-                        item={item}
-                        pathname={pathname}
-                      />
-                    ))}
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </SidebarGroup>
-            </>
-          )}
 
           {debugItems.length > 0 && (
             <>

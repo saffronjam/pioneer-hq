@@ -40,6 +40,25 @@ type Instance struct {
 	CreatedAt          time.Time
 }
 
+type PlannerCatalog struct {
+	SessionID string
+	Catalog   string
+}
+
+type PlannerDependency struct {
+	DiagramID string
+	TargetID  string
+	SessionID string
+}
+
+type PlannerDiagram struct {
+	ID        string
+	SessionID string
+	Revision  int64
+	Document  string
+	UpdatedAt string
+}
+
 type Session struct {
 	ID        session.ID
 	Name      string

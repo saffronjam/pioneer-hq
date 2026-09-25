@@ -10,7 +10,7 @@ import (
 )
 
 // AuthCookieName is the same-origin HTTP-only cookie carrying the access token.
-const AuthCookieName = "sd_access_token"
+const AuthCookieName = "pioneer-hq-access-token"
 
 // secureCookies reports whether the instance is served over HTTPS, in which case
 // the auth cookie must not be sent over plaintext.

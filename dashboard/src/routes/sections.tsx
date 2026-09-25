@@ -18,6 +18,8 @@ import SettingsPage from '@/pages/settings';
 import SetupPage from '@/pages/setup';
 import TrainsPage from '@/pages/trains';
 
+const CalculatorPage = lazy(() => import('@/pages/calculator'));
+
 export const HomePage = lazy(() => import('@/pages/home'));
 export const Page404 = lazy(() => import('@/pages/page-not-found'));
 
@@ -67,6 +69,7 @@ export function Router() {
         { element: <HomePage />, index: true },
         { path: 'milestones', element: <MilestonesPage /> },
         { path: 'map', element: <MapPage /> },
+        { path: 'calculator/:diagramId?', element: <CalculatorPage /> },
         { path: 'production', element: <PoductionPage /> },
         { path: 'power', element: <PowerPage /> },
         { path: 'trains', element: <TrainsPage /> },

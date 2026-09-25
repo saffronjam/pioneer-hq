@@ -1,9 +1,10 @@
-# Satisfactory Dashboard task runner. Run `just` to list every recipe.
+# Pioneer HQ task runner. Run `just` to list every recipe.
 
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
 mod scrape-images 'scripts/scrape_images'
 mod scrape-map 'scripts/scrape_map'
+mod fetch-recipes 'scripts/fetch_recipes'
 
 api := justfile_directory() / "api"
 web := justfile_directory() / "dashboard"
@@ -14,10 +15,10 @@ map_revision := "1763022054"
 icons_dir := web / "public/assets/images/satisfactory"
 tiles_dir := icons_dir / "map" / map_revision
 
-app_image := "ghcr.io/saffronjam/satisfactory-dashboard"
-seed_image := "ghcr.io/saffronjam/satisfactory-dashboard-seed"
-assets_image := "ghcr.io/saffronjam/satisfactory-dashboard-assets"
-source_label := "org.opencontainers.image.source=https://github.com/saffronjam/satisfactory-dashboard"
+app_image := "ghcr.io/saffronjam/pioneer-hq"
+seed_image := "ghcr.io/saffronjam/pioneer-hq-seed"
+assets_image := "ghcr.io/saffronjam/pioneer-hq-assets"
+source_label := "org.opencontainers.image.source=https://github.com/saffronjam/pioneer-hq"
 
 sqlc_version := "1.31.0"
 
@@ -104,7 +105,7 @@ kill:
 
 [group('check')]
 [doc('Everything CI runs: formatting, lint, typecheck, tests, codegen drift')]
-check: format-check lint typecheck test check-generated
+check: format-check lint typecheck test test-web check-generated
 
 [group('check')]
 [doc('Format Go and frontend source in place')]
@@ -142,6 +143,12 @@ typecheck:
 [doc('Run the Go tests with the race detector')]
 test:
     go test ./... -race -count=1
+
+[group('check')]
+[working-directory('dashboard')]
+[doc('Run frontend planner behavior tests')]
+test-web:
+    bun test src/sections/calculator
 
 [group('check')]
 [doc('Fail if any committed generated file is out of date')]
@@ -273,7 +280,7 @@ logs:
 assets-publish tag:
     git lfs pull
     oras push {{ assets_image }}:{{ tag }} \
-        --artifact-type application/vnd.satisfactory-dashboard.assets \
+        --artifact-type application/vnd.pioneer-hq.assets \
         map-realistic.tar.gz:application/gzip \
         map-game.tar.gz:application/gzip \
         scraped-images.tar.gz:application/gzip

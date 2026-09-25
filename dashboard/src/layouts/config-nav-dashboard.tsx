@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import {
   Bug,
+  Calculator,
   Factory,
   Flag,
   LayoutDashboard,
@@ -37,40 +38,46 @@ const baseNavData: NavItem[] = [
     group: 'main',
   },
   {
+    title: 'Planner',
+    path: '/calculator',
+    icon: <Calculator size={20} />,
+    group: 'main',
+  },
+  {
     title: 'Production',
     path: '/production',
     icon: <Factory size={20} />,
-    group: 'main',
+    group: 'sub',
   },
   {
     title: 'Power',
     path: '/power',
     icon: <Zap size={20} />,
-    group: 'main',
+    group: 'sub',
   },
   {
     title: 'Milestones',
     path: '/milestones',
     icon: <Flag size={20} />,
-    group: 'main',
+    group: 'sub',
   },
   {
     title: 'Trains',
     path: '/trains',
     icon: <TrainFront size={20} />,
-    group: 'main',
+    group: 'sub',
   },
   {
     title: 'Drones',
     path: '/drones',
     icon: <Plane size={20} />,
-    group: 'main',
+    group: 'sub',
   },
   {
     title: 'Players',
     path: '/players',
     icon: <Users size={20} />,
-    group: 'main',
+    group: 'sub',
   },
   {
     title: 'Settings',

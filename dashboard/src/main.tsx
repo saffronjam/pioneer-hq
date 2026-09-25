@@ -22,7 +22,7 @@ root.render(
   <StrictMode>
     <HelmetProvider>
       <BrowserRouter>
-        <ThemeProvider defaultTheme="dark" storageKey="satisfactory-dashboard-theme">
+        <ThemeProvider defaultTheme="dark" storageKey="pioneer-hq-theme">
           <TooltipProvider>
             <Suspense>
               <GraphQLClientProvider>

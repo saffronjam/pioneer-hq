@@ -774,7 +774,7 @@ export interface SessionDTO {
 //////////
 // source: settings.go
 /*
-Package models provides the data models for the Satisfactory Dashboard API.
+Package models provides the data models for the Pioneer HQ API.
 */
 
 /**

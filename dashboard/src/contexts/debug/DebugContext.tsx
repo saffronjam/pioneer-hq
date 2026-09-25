@@ -8,7 +8,7 @@ interface DebugContextType {
 
 const DebugContext = createContext<DebugContextType | null>(null);
 
-const DEBUG_MODE_KEY = 'satisfactory-dashboard-debug-mode';
+const DEBUG_MODE_KEY = 'pioneer-hq-debug-mode';
 
 export function DebugProvider({ children }: { children: React.ReactNode }) {
   const [isDebugMode, setIsDebugMode] = useState(() => {

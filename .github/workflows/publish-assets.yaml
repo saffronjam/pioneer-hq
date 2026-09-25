@@ -44,8 +44,8 @@ jobs:
       - name: Push assets artifact
         working-directory: assets
         run: |
-          oras push ${{ env.REGISTRY }}/${{ github.repository_owner }}/satisfactory-dashboard-assets:${{ inputs.assets_tag }} \
-            --artifact-type application/vnd.satisfactory-dashboard.assets \
+          oras push ${{ env.REGISTRY }}/${{ github.repository_owner }}/pioneer-hq-assets:${{ inputs.assets_tag }} \
+            --artifact-type application/vnd.pioneer-hq.assets \
             map-realistic.tar.gz:application/gzip \
             map-game.tar.gz:application/gzip \
             scraped-images.tar.gz:application/gzip

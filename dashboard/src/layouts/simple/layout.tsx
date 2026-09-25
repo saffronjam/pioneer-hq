@@ -21,11 +21,7 @@ export function SimpleLayout({ children, className, hideHeader, content }: Simpl
         <header className="sticky top-0 z-50 flex h-14 items-center border-b border-border bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:h-16 md:px-6">
           <div className="container mx-auto flex max-w-7xl items-center justify-between">
             <a href="/" className="flex items-center" aria-label="Go to home">
-              <img
-                src="/logo/vector/default.svg"
-                alt="Satisfactory Dashboard Logo"
-                className="h-8 w-auto"
-              />
+              <img src="/logo/vector/default.svg" alt="Pioneer HQ Logo" className="h-8 w-auto" />
             </a>
           </div>
         </header>

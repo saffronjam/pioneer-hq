@@ -4,7 +4,7 @@ Guidance for agents working in this repository.
 
 ## Project overview
 
-Satisfactory Dashboard is a real-time dashboard for monitoring a Satisfactory factory: factory
+Pioneer HQ is a real-time dashboard for monitoring a Satisfactory factory: factory
 statistics, power circuits, drone/train tracking, players, an interactive Leaflet map, and live
 updates over GraphQL subscriptions.
 
@@ -124,7 +124,7 @@ arrive as a build arg — nothing inside the image can derive it.
   into a draft GitHub release named after the tag, so the subject line is dropped on purpose:
 
   ```
-  Satisfactory Dashboard v1.2.3
+  Pioneer HQ v1.2.3
                                   <- blank line
   Highlights since v1.2.2 (12 commits).
 
@@ -136,6 +136,6 @@ arrive as a build arg — nothing inside the image can derive it.
   ```
 
 - `ci.yaml` independently gates on format, lint, typecheck, test, and codegen drift before pushing
-  `ghcr.io/saffronjam/satisfactory-dashboard{,-seed}`.
+  `ghcr.io/saffronjam/pioneer-hq{,-seed}`.
 - Map/icon tiles ship separately as a versioned OCI artifact, published by hand via the
-  `publish-assets` workflow or `just assets-publish <tag>`. Pin them with `SD_ASSETS_REF`.
+  `publish-assets` workflow or `just assets-publish <tag>`. Pin them with `PIONEER_HQ_ASSETS_REF`.

@@ -65,7 +65,7 @@ func main() {
 // default preset.
 func loadConfig(path string) (frmmock.Config, error) {
 	if path == "" {
-		if fromEnv := os.Getenv("SD_FRMMOCK_CONFIG_FILE"); fromEnv != "" {
+		if fromEnv := os.Getenv("PIONEER_HQ_FRMMOCK_CONFIG_FILE"); fromEnv != "" {
 			path = fromEnv
 		}
 	}
@@ -84,32 +84,32 @@ func loadConfig(path string) (frmmock.Config, error) {
 	return cfg, nil
 }
 
-// applyEnv layers SD_FRMMOCK_* overrides over the config, following the same
+// applyEnv layers PIONEER_HQ_FRMMOCK_* overrides over the config, following the same
 // explicit one-variable-per-knob style the server's own config uses.
 func applyEnv(cfg *frmmock.Config) error {
-	applyFlagFromEnv("SD_FRMMOCK_ADDR", &cfg.Addr)
-	applyFlagFromEnv("SD_FRMMOCK_PRESET", &cfg.Preset)
-	applyFlagFromEnv("SD_FRMMOCK_SAVE_NAME", &cfg.SaveName)
-	applyFlagFromEnv("SD_FRMMOCK_EPOCH", &cfg.Epoch)
+	applyFlagFromEnv("PIONEER_HQ_FRMMOCK_ADDR", &cfg.Addr)
+	applyFlagFromEnv("PIONEER_HQ_FRMMOCK_PRESET", &cfg.Preset)
+	applyFlagFromEnv("PIONEER_HQ_FRMMOCK_SAVE_NAME", &cfg.SaveName)
+	applyFlagFromEnv("PIONEER_HQ_FRMMOCK_EPOCH", &cfg.Epoch)
 
-	if v := os.Getenv("SD_FRMMOCK_SEED"); v != "" {
+	if v := os.Getenv("PIONEER_HQ_FRMMOCK_SEED"); v != "" {
 		parsed, err := strconv.ParseInt(v, 10, 64)
 		if err != nil {
-			return fmt.Errorf("invalid SD_FRMMOCK_SEED: %w", err)
+			return fmt.Errorf("invalid PIONEER_HQ_FRMMOCK_SEED: %w", err)
 		}
 		cfg.Seed = parsed
 	}
-	if v := os.Getenv("SD_FRMMOCK_PHASE"); v != "" {
+	if v := os.Getenv("PIONEER_HQ_FRMMOCK_PHASE"); v != "" {
 		parsed, err := strconv.Atoi(v)
 		if err != nil {
-			return fmt.Errorf("invalid SD_FRMMOCK_PHASE: %w", err)
+			return fmt.Errorf("invalid PIONEER_HQ_FRMMOCK_PHASE: %w", err)
 		}
 		cfg.Phase = parsed
 	}
-	if v := os.Getenv("SD_FRMMOCK_TICK_MS"); v != "" {
+	if v := os.Getenv("PIONEER_HQ_FRMMOCK_TICK_MS"); v != "" {
 		parsed, err := strconv.Atoi(v)
 		if err != nil {
-			return fmt.Errorf("invalid SD_FRMMOCK_TICK_MS: %w", err)
+			return fmt.Errorf("invalid PIONEER_HQ_FRMMOCK_TICK_MS: %w", err)
 		}
 		cfg.TickMs = parsed
 	}

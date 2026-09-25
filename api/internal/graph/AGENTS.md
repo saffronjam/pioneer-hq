@@ -64,4 +64,4 @@ creating a new file per type.
 `@auth` on a schema field routes through `AuthDirective`, which rejects with a `UNAUTHENTICATED`
 extension unless `auth.UserFromContext` finds a caller. The caller is attached upstream by
 `authMiddleware` in `cmd/server.go` (HTTP) or the websocket init func, both reading the same
-`sd_access_token` cookie. Guard every field that exposes session data or mutates state.
+`pioneer-hq-access-token` cookie. Guard every field that exposes session data or mutates state.

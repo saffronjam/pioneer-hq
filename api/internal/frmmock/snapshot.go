@@ -29,6 +29,7 @@ type Snapshot struct {
 // once per world, which is what structurally guarantees the dashboard's identity
 // keys cannot drift: the bytes are literally the same every poll.
 type staticPayloads struct {
+	Recipes        []frm_models.PlannerRecipe
 	Belts          []frm_models.Belt
 	Splitters      []frm_models.SplitterMerger
 	Pipes          []frm_models.Pipe
@@ -59,7 +60,8 @@ func buildStatic(w *World) *staticPayloads {
 		Storages:       []frm_models.Storage{},
 		SpaceElevator:  []frm_models.SpaceElevator{},
 		HubTerminal:    []frm_models.HubTerminal{},
-		Schematics:     []frm_models.Schematic{},
+		Schematics:     renderPlannerSchematics(w),
+		Recipes:        renderPlannerRecipes(),
 	}
 }
 

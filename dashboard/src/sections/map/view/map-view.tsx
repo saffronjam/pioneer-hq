@@ -63,7 +63,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
-const MAP_STATE_KEY = 'satisfactory-dashboard-map-state';
+const MAP_STATE_KEY = 'pioneer-hq-map-state';
 
 type PersistedMapState = {
   enabledLayers: string[];

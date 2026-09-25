@@ -1,12 +1,12 @@
 #!/bin/sh
 set -eu
-: "${SD_ASSETS_REF:?SD_ASSETS_REF must be set (e.g. ghcr.io/<owner>/satisfactory-dashboard-assets:tiles-YYYYMMDD)}"
+: "${PIONEER_HQ_ASSETS_REF:?PIONEER_HQ_ASSETS_REF must be set (e.g. ghcr.io/<owner>/pioneer-hq-assets:tiles-YYYYMMDD)}"
 
 dest="/assets/images/satisfactory"
 marker="/assets/.assets-ref"
 
-if [ -f "$marker" ] && [ "$(cat "$marker")" = "$SD_ASSETS_REF" ]; then
-	echo "assets already present for $SD_ASSETS_REF — skipping"
+if [ -f "$marker" ] && [ "$(cat "$marker")" = "$PIONEER_HQ_ASSETS_REF" ]; then
+	echo "assets already present for $PIONEER_HQ_ASSETS_REF — skipping"
 	exit 0
 fi
 
@@ -17,14 +17,14 @@ tmp="$(mktemp -d)"
 # several minutes of silence that reads like a hang, so report progress from the
 # layer sizes in the manifest instead.
 total_kb=$(
-	oras manifest fetch "$SD_ASSETS_REF" 2>/dev/null |
+	oras manifest fetch "$PIONEER_HQ_ASSETS_REF" 2>/dev/null |
 		tr ',' '\n' | grep -o '"size":[0-9]*' | cut -d: -f2 |
 		awk '{ sum += $1 } END { printf "%d", sum / 1024 }'
 ) || total_kb=0
 
-echo "pulling assets from $SD_ASSETS_REF"
+echo "pulling assets from $PIONEER_HQ_ASSETS_REF"
 
-oras pull "$SD_ASSETS_REF" -o "$tmp" &
+oras pull "$PIONEER_HQ_ASSETS_REF" -o "$tmp" &
 pull_pid=$!
 
 while kill -0 "$pull_pid" 2>/dev/null; do
@@ -49,5 +49,5 @@ echo "extracting icons"
 tar -xzf "$tmp/scraped-images.tar.gz" --strip-components=1 -C "$dest"
 
 rm -rf "$tmp"
-printf '%s' "$SD_ASSETS_REF" > "$marker"
-echo "seeded assets from $SD_ASSETS_REF"
+printf '%s' "$PIONEER_HQ_ASSETS_REF" > "$marker"
+echo "seeded assets from $PIONEER_HQ_ASSETS_REF"

@@ -37,7 +37,7 @@ init and passes it to `buildHandler`.
 
 `EnsureInstance` creates the singleton row and, while unclaimed, makes sure a setup token exists:
 the digest goes in `instance.bootstrap_token_hash`, the plaintext is logged and written to
-`$SD_DATA_DIR/bootstrap.token` at 0600. It reissues if the file has gone missing, because a deleted
+`$PIONEER_HQ_DATA_DIR/bootstrap.token` at 0600. It reissues if the file has gone missing, because a deleted
 file would otherwise lock the operator out of their own setup; rotating an unclaimed token is
 harmless.
 

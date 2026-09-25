@@ -11,6 +11,6 @@ export type ConfigValue = {
 // ----------------------------------------------------------------------
 
 export const CONFIG: ConfigValue = {
-  appName: 'Satisfactory Dashboard',
+  appName: 'Pioneer HQ',
   appVersion: __BUILD_VERSION__,
 };

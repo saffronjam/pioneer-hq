@@ -70,7 +70,7 @@ export function SetupView() {
             <Icon icon="material-symbols:factory" className="size-10 text-primary" />
           </div>
 
-          <h1 className="mb-8 text-center text-2xl font-bold">Welcome to Satisfactory Dashboard</h1>
+          <h1 className="mb-8 text-center text-2xl font-bold">Welcome to Pioneer HQ</h1>
 
           {errors.form && (
             <Alert variant="destructive" className="mb-4">

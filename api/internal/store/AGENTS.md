@@ -76,7 +76,7 @@ One row per `(session_id, data_type, game_time_id)`, with the sample as opaque J
   bucket (downsampling for charts). `Limit <= 0` means unlimited; `ToID <= 0` becomes `maxGameTimeID`.
   Both forms keep the **newest** points when `Limit` trims the result, which is why each is a
   descending inner select re-sorted ascending on the way out.
-- `RunHistoryRetention` trims each series past `SD_MAX_SAMPLE_GAME_DURATION` of game time;
+- `RunHistoryRetention` trims each series past `PIONEER_HQ_MAX_SAMPLE_GAME_DURATION` of game time;
   `RunTokenPrune` deletes expired tokens hourly. Both are started from `cmd.Create`.
 
 ## Concurrency

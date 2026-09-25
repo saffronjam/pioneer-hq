@@ -21,15 +21,15 @@ ARG TARGETARCH
 ARG VERSION=localbuild
 RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath \
     -ldflags "-X api/internal/version.Version=${VERSION}" \
-    -o /out/satisfactory-dashboard .
+    -o /out/pioneer-hq .
 
 FROM alpine:3
 RUN apk add --no-cache ca-certificates
 WORKDIR /app
-COPY --from=build /out/satisfactory-dashboard .
+COPY --from=build /out/pioneer-hq .
 COPY api/config.docker.yml config.local.yml
-ENV SD_ASSETS_DIR=/assets
-ENV SD_DB_PATH=/data/satisfactory-dashboard.db
+ENV PIONEER_HQ_ASSETS_DIR=/assets
+ENV PIONEER_HQ_DB_PATH=/data/pioneer-hq.db
 VOLUME ["/data", "/assets"]
 EXPOSE 8081
-ENTRYPOINT ["./satisfactory-dashboard"]
+ENTRYPOINT ["./pioneer-hq"]

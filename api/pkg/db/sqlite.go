@@ -21,7 +21,7 @@ func Path() string {
 	if path := config.Config.DBPath; path != "" {
 		return path
 	}
-	return "satisfactory-dashboard.db"
+	return "pioneer-hq.db"
 }
 
 func (dbCtx *Context) setupSQLite() error {

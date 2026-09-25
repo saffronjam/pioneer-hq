@@ -949,6 +949,7 @@ type ChangePasswordResult {
 # ============================================================================
 
 type Query {
+  plannerWorkspace(sessionId: ID!, calculate: Boolean! = false): PlannerWorkspace! @auth
   sessions: [Session!]! @auth
   session(id: ID!): Session @auth
   previewSession(address: String!): SessionInfo! @auth
@@ -998,6 +999,8 @@ type Query {
 }
 
 type Mutation {
+  savePlannerDiagram(sessionId: ID!, id: ID!, expectedRevision: Int!, document: PlannerDocumentInput!, expand: Boolean! = false): PlannerDiagram! @auth
+  deletePlannerDiagram(sessionId: ID!, id: ID!, expectedRevision: Int!): Boolean! @auth
   login(input: LoginInput!): LoginResult!
   logout: LogoutResult! @auth
 
@@ -1020,6 +1023,7 @@ type Mutation {
 }
 
 type Subscription {
+  plannerWorkspaceChanged(sessionId: ID!): PlannerWorkspaceChange! @auth
   satisfactoryApiStatusChanged(sessionId: ID!): SatisfactoryApiStatus! @auth
   connectivityChanged(sessionId: ID!): ConnectivityStatus! @auth
   sessionUpdated(sessionId: ID!): Session! @auth
@@ -1057,4 +1061,262 @@ type Subscription {
   radarTowersChanged(sessionId: ID!): [RadarTower!]! @auth
   resourceNodesChanged(sessionId: ID!): [ResourceNode!]! @auth
   schematicsChanged(sessionId: ID!): [Schematic!]! @auth
+}
+
+# Production planner
+
+type PlannerAmount {
+  itemId: ID!
+  amount: Float!
+}
+
+type PlannerItem {
+  unavailable: Boolean!
+  id: ID!
+  name: String!
+  form: String!
+  resource: Boolean!
+  sinkable: Boolean!
+}
+
+type PlannerMachine {
+  id: ID!
+  name: String!
+  power: Float!
+  powerExponent: Float!
+  boostPowerExponent: Float!
+  boostSlots: Int!
+  boostPerSlot: Float!
+  variablePower: Boolean!
+  minClock: Float!
+  maxClock: Float!
+}
+
+type PlannerRecipe {
+  unavailable: Boolean!
+  id: ID!
+  name: String!
+  alternate: Boolean!
+  duration: Float!
+  machineIds: [String!]!
+  ingredients: [PlannerAmount!]!
+  products: [PlannerAmount!]!
+  powerConstant: Float!
+  powerFactor: Float!
+}
+
+type PlannerUnlock {
+  recipeId: ID!
+  unlocked: Boolean!
+}
+
+type PlannerCatalog {
+  syncError: String!
+  version: String!
+  sourceHash: String!
+  items: [PlannerItem!]!
+  machines: [PlannerMachine!]!
+  recipes: [PlannerRecipe!]!
+  belts: [Float!]!
+  pipes: [Float!]!
+  unlocks: [PlannerUnlock!]!
+}
+
+type PlannerRecipeChoice {
+  itemId: ID!
+  recipeId: ID!
+}
+
+input PlannerRecipeChoiceInput {
+  itemId: ID!
+  recipeId: ID!
+}
+
+type PlannerSettings {
+  recipes: [PlannerRecipeChoice!]!
+  beltTier: Int!
+  pipeTier: Int!
+}
+
+input PlannerSettingsInput {
+  recipes: [PlannerRecipeChoiceInput!]!
+  beltTier: Int!
+  pipeTier: Int!
+}
+
+type PlannerNode {
+  id: ID!
+  kind: String!
+  parentId: ID!
+  name: String!
+  itemId: ID!
+  recipeId: ID!
+  machineId: ID!
+  linkedDiagramId: ID!
+  x: Float!
+  y: Float!
+  width: Float!
+  height: Float!
+  collapsed: Boolean!
+  rate: Float!
+  clock: Float!
+  somersloops: Int!
+  status: String!
+  generated: Boolean!
+  fixedSupply: Boolean!
+  settings: PlannerSettings!
+  builtFingerprint: String!
+}
+
+input PlannerNodeInput {
+  id: ID!
+  kind: String!
+  parentId: ID!
+  name: String!
+  itemId: ID!
+  recipeId: ID!
+  machineId: ID!
+  linkedDiagramId: ID!
+  x: Float!
+  y: Float!
+  width: Float!
+  height: Float!
+  collapsed: Boolean!
+  rate: Float!
+  clock: Float!
+  somersloops: Int!
+  status: String!
+  generated: Boolean!
+  fixedSupply: Boolean!
+  settings: PlannerSettingsInput!
+  builtFingerprint: String!
+}
+
+type PlannerConnection {
+  id: ID!
+  source: String!
+  target: String!
+  sourcePort: String!
+  targetPort: String!
+  itemId: ID!
+  availableLines: Int
+}
+
+input PlannerConnectionInput {
+  id: ID!
+  source: String!
+  target: String!
+  sourcePort: String!
+  targetPort: String!
+  itemId: ID!
+  availableLines: Int
+}
+
+type PlannerViewport {
+  x: Float!
+  y: Float!
+  zoom: Float!
+}
+
+input PlannerViewportInput {
+  x: Float!
+  y: Float!
+  zoom: Float!
+}
+
+type PlannerDocument {
+  version: Int!
+  name: String!
+  description: String!
+  settings: PlannerSettings!
+  nodes: [PlannerNode!]!
+  connections: [PlannerConnection!]!
+  viewport: PlannerViewport!
+  catalogVersion: String!
+}
+
+input PlannerDocumentInput {
+  version: Int!
+  name: String!
+  description: String!
+  settings: PlannerSettingsInput!
+  nodes: [PlannerNodeInput!]!
+  connections: [PlannerConnectionInput!]!
+  viewport: PlannerViewportInput!
+  catalogVersion: String!
+}
+
+type PlannerDiagram {
+  id: ID!
+  sessionId: ID!
+  revision: Int!
+  updatedAt: DateTime!
+  document: PlannerDocument!
+}
+
+type PlannerFlow {
+  itemId: ID!
+  rate: Float!
+}
+
+type PlannerDiagnostic {
+  diagramId: ID!
+  nodeId: ID!
+  connectionId: ID!
+  code: String!
+  message: String!
+  itemId: ID!
+  rate: Float!
+}
+
+type PlannerNodeResult {
+  nodeId: ID!
+  machines: Int!
+  equivalentMachines: Float!
+  utilization: Float!
+  somersloops: Int!
+  powerKnown: Boolean!
+  powerMin: Float!
+  powerMax: Float!
+  installedPowerMax: Float!
+  inputs: [PlannerFlow!]!
+  outputs: [PlannerFlow!]!
+  fingerprint: String!
+}
+
+type PlannerConnectionResult {
+  connectionId: ID!
+  rate: Float!
+  tier: Int!
+  capacity: Float!
+  requiredLines: Int!
+  scopeId: ID!
+}
+
+type PlannerCalculation {
+  resolved: Boolean!
+  diagramId: ID!
+  revision: Int!
+  catalogVersion: String!
+  workspaceRevision: String!
+  nodes: [PlannerNodeResult!]!
+  connections: [PlannerConnectionResult!]!
+  diagnostics: [PlannerDiagnostic!]!
+}
+
+type PlannerWorkspace {
+  revision: String!
+  catalog: PlannerCatalog!
+  diagrams: [PlannerDiagram!]!
+  calculations: [PlannerCalculation!]!
+}
+
+type PlannerWorkspaceChange {
+  revision: String!
+  catalogVersion: String!
+  diagrams: [PlannerDiagramRevision!]!
+}
+type PlannerDiagramRevision {
+  id: ID!
+  revision: Int!
 }

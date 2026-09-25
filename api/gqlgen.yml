@@ -19,3 +19,58 @@ models:
   DateTime:
     model:
       - github.com/99designs/gqlgen/graphql.Time
+
+  PlannerAmount:
+    model: api/internal/planner.Amount
+  PlannerItem:
+    model: api/internal/planner.Item
+  PlannerMachine:
+    model: api/internal/planner.Machine
+  PlannerRecipe:
+    model: api/internal/planner.Recipe
+  PlannerUnlock:
+    model: api/internal/planner.Unlock
+  PlannerCatalog:
+    model: api/internal/planner.Catalog
+  PlannerRecipeChoice:
+    model: api/internal/planner.RecipeChoice
+  PlannerRecipeChoiceInput:
+    model: api/internal/planner.RecipeChoice
+  PlannerSettings:
+    model: api/internal/planner.Settings
+  PlannerSettingsInput:
+    model: api/internal/planner.Settings
+  PlannerNode:
+    model: api/internal/planner.Node
+  PlannerNodeInput:
+    model: api/internal/planner.Node
+  PlannerConnection:
+    model: api/internal/planner.Connection
+  PlannerConnectionInput:
+    model: api/internal/planner.Connection
+  PlannerViewport:
+    model: api/internal/planner.Viewport
+  PlannerViewportInput:
+    model: api/internal/planner.Viewport
+  PlannerDocument:
+    model: api/internal/planner.Document
+  PlannerDocumentInput:
+    model: api/internal/planner.Document
+  PlannerDiagram:
+    model: api/internal/planner.Diagram
+  PlannerFlow:
+    model: api/internal/planner.Flow
+  PlannerDiagnostic:
+    model: api/internal/planner.Diagnostic
+  PlannerNodeResult:
+    model: api/internal/planner.NodeResult
+  PlannerConnectionResult:
+    model: api/internal/planner.ConnectionResult
+  PlannerCalculation:
+    model: api/internal/planner.Calculation
+  PlannerWorkspace:
+    model: api/internal/planner.Workspace
+  PlannerWorkspaceChange:
+    model: api/internal/planner.Change
+  PlannerDiagramRevision:
+    model: api/internal/planner.DiagramRevision
