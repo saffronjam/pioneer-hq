@@ -9,7 +9,7 @@ services:
       # Pinned to a published tiles revision. There is no ":latest" for this
       # artifact: the seeder skips work while the ref matches the marker it
       # wrote, so a moving tag would never trigger a re-pull.
-      - PIONEER_HQ_ASSETS_REF=${PIONEER_HQ_ASSETS_REF:-ghcr.io/saffronjam/pioneer-hq-assets:tiles-20260805}
+      - PIONEER_HQ_ASSETS_REF=${PIONEER_HQ_ASSETS_REF:-ghcr.io/saffronjam/pioneer-hq-assets:tiles-20260926}
     volumes:
       - assets:/assets
     restart: "no"
