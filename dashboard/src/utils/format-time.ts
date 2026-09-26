@@ -13,67 +13,58 @@ dayjs.extend(relativeTime);
 
 export type DatePickerFormat = Dayjs | Date | string | number | null | undefined;
 
-/**
- * Docs: https://day.js.org/docs/en/display/format
- */
+/** ISO 8601 display formats in the viewer's local time zone. */
 export const formatStr = {
-  dateTime: 'DD MMM YYYY h:mm a', // 17 Apr 2022 12:00 am
-  date: 'DD MMM YYYY', // 17 Apr 2022
-  time: 'h:mm a', // 12:00 am
-  split: {
-    dateTime: 'DD/MM/YYYY h:mm a', // 17/04/2022 12:00 am
-    date: 'DD/MM/YYYY', // 17/04/2022
-  },
-  paramCase: {
-    dateTime: 'DD-MM-YYYY h:mm a', // 17-04-2022 12:00 am
-    date: 'DD-MM-YYYY', // 17-04-2022
-  },
+  dateTime: 'YYYY-MM-DD[T]HH:mm:ssZ',
+  date: 'YYYY-MM-DD',
+  time: 'HH:mm:ssZ',
 };
 
-export function today(format?: string) {
-  return dayjs(new Date()).startOf('day').format(format);
+/** Returns today's ISO 8601 calendar date. */
+export function today() {
+  return dayjs().format(formatStr.date);
 }
 
 // ----------------------------------------------------------------------
 
-/** output: 17 Apr 2022 12:00 am
+/** output: 2026-09-25T19:37:18+02:00
  */
-export function fDateTime(date: DatePickerFormat, format?: string) {
-  if (!date) {
+export function fDateTime(date: DatePickerFormat) {
+  if (date === null || date === undefined || date === '') {
     return null;
   }
 
   const isValid = dayjs(date).isValid();
 
-  return isValid ? dayjs(date).format(format ?? formatStr.dateTime) : 'Invalid time value';
+  return isValid ? dayjs(date).format(formatStr.dateTime) : 'Invalid time value';
 }
 
 // ----------------------------------------------------------------------
 
-/** output: 17 Apr 2022
+/** output: 2026-09-25
  */
-export function fDate(date: DatePickerFormat, format?: string) {
-  if (!date) {
+export function fDate(date: DatePickerFormat) {
+  if (date === null || date === undefined || date === '') {
     return null;
   }
 
   const isValid = dayjs(date).isValid();
 
-  return isValid ? dayjs(date).format(format ?? formatStr.date) : 'Invalid time value';
+  return isValid ? dayjs(date).format(formatStr.date) : 'Invalid time value';
 }
 
 // ----------------------------------------------------------------------
 
-/** output: 12:00 am
+/** output: 19:37:18+02:00
  */
-export function fTime(date: DatePickerFormat, format?: string) {
-  if (!date) {
+export function fTime(date: DatePickerFormat) {
+  if (date === null || date === undefined || date === '') {
     return null;
   }
 
   const isValid = dayjs(date).isValid();
 
-  return isValid ? dayjs(date).format(format ?? formatStr.time) : 'Invalid time value';
+  return isValid ? dayjs(date).format(formatStr.time) : 'Invalid time value';
 }
 
 // ----------------------------------------------------------------------
@@ -81,7 +72,7 @@ export function fTime(date: DatePickerFormat, format?: string) {
 /** output: 1713250100
  */
 export function fTimestamp(date: DatePickerFormat) {
-  if (!date) {
+  if (date === null || date === undefined || date === '') {
     return null;
   }
 
@@ -95,7 +86,7 @@ export function fTimestamp(date: DatePickerFormat) {
 /** output: a few seconds, 2 years
  */
 export function fToNow(date: DatePickerFormat) {
-  if (!date) {
+  if (date === null || date === undefined || date === '') {
     return null;
   }
 
