@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { ApiContext } from 'src/contexts/api/useApi';
 import { LOCKABLE_FEATURES, LockableFeature } from 'src/config/unlockables';
@@ -15,7 +15,7 @@ export interface LockStatus {
 
 /**
  * Hook providing unlock status checking for lockable features.
- * Uses schematics data from SSE to determine which milestones have been purchased.
+ * Uses schematics data from GraphQL subscriptions to determine which milestones have been purchased.
  * Implements fail-open behavior: features are unlocked when schematics data is unavailable
  * or when a specific milestone is not found in the schematics data.
  */
@@ -37,19 +37,6 @@ export function useUnlockables() {
   }, [schematics]);
 
   const schematicsAvailable = schematics && schematics.length > 0;
-
-  useEffect(() => {
-    if (!schematicsAvailable) {
-      return;
-    }
-    for (const feature of LOCKABLE_FEATURES) {
-      if (!allMilestoneNames.has(feature.milestoneName)) {
-        console.warn(
-          `[useUnlockables] Milestone "${feature.milestoneName}" not found in schematics data for route "${feature.route}". Feature will be treated as unlocked.`
-        );
-      }
-    }
-  }, [schematicsAvailable, allMilestoneNames]);
 
   /**
    * Checks if a feature at the given route is locked.

@@ -9,7 +9,7 @@
  * Defines a feature that requires a milestone to be unlocked.
  *
  * Features are automatically locked in navigation and on their respective pages
- * until the specified milestone is purchased in-game. The system uses SSE events
+ * until the specified milestone is purchased in-game. The system uses GraphQL subscriptions
  * to update lock status in real-time.
  *
  * @example
@@ -27,7 +27,7 @@
  *   This is used to identify which navigation item and page to lock.
  * @property milestoneName - Must match the exact milestone name from the FRM API
  *   schematics data. Case-sensitive. If no match is found, the feature will be
- *   treated as unlocked with a console warning.
+ *   treated as unlocked.
  * @property tier - The milestone tier number for display purposes only. Shown on
  *   the locked page UI as "(Tier X)".
  * @property displayName - Human-readable name shown in the locked page UI and
