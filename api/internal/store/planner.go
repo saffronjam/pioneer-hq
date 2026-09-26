@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"slices"
 	"time"
 
 	"api/internal/planner"
@@ -44,6 +45,29 @@ func loadPlanner(ctx context.Context, q *sqlite.Queries, sid string) (planner.Ca
 			return c, nil, err
 		}
 	}
+	metadata := planner.BundledCatalog()
+	recipeMetadata := make(map[string]planner.Recipe, len(metadata.Recipes))
+	for _, recipe := range metadata.Recipes {
+		recipeMetadata[recipe.ID] = recipe
+	}
+	for i := range c.Recipes {
+		if recipe, ok := recipeMetadata[c.Recipes[i].ID]; ok {
+			c.Recipes[i].Alternate = recipe.Alternate
+		}
+	}
+	for i := range c.Machines {
+		for _, machine := range metadata.Machines {
+			if c.Machines[i].ID == machine.ID {
+				c.Machines[i].BuildCost = machine.BuildCost
+			}
+		}
+	}
+	for _, item := range metadata.Items {
+		if !slices.ContainsFunc(c.Items, func(i planner.Item) bool { return i.ID == item.ID }) {
+			c.Items = append(c.Items, item)
+		}
+	}
+	c.Version = planner.CatalogVersion(c)
 	rows, err := q.ListPlannerDiagrams(ctx, sid)
 	if err != nil {
 		return c, nil, err

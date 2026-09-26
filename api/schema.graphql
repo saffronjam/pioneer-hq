@@ -949,7 +949,10 @@ type ChangePasswordResult {
 # ============================================================================
 
 type Query {
+  previewPlannerDiagram(sessionId: ID!, id: ID!, document: PlannerDocumentInput!): PlannerWorkspace! @auth
   plannerWorkspace(sessionId: ID!, calculate: Boolean! = false): PlannerWorkspace! @auth
+  exportPlannerDiagram(sessionId: ID!, id: ID!): String! @auth
+  validatePlannerImport(sessionId: ID!, json: String!): PlannerImportPreview! @auth
   sessions: [Session!]! @auth
   session(id: ID!): Session @auth
   previewSession(address: String!): SessionInfo! @auth
@@ -1001,6 +1004,8 @@ type Query {
 type Mutation {
   savePlannerDiagram(sessionId: ID!, id: ID!, expectedRevision: Int!, document: PlannerDocumentInput!, expand: Boolean! = false): PlannerDiagram! @auth
   deletePlannerDiagram(sessionId: ID!, id: ID!, expectedRevision: Int!): Boolean! @auth
+  importPlannerDiagram(sessionId: ID!, name: String!, json: String!): PlannerDiagram! @auth
+  duplicatePlannerDiagram(sessionId: ID!, id: ID!, name: String!): PlannerDiagram! @auth
   login(input: LoginInput!): LoginResult!
   logout: LogoutResult! @auth
 
@@ -1080,6 +1085,7 @@ type PlannerItem {
 }
 
 type PlannerMachine {
+  buildCost: [PlannerAmount!]!
   id: ID!
   name: String!
   power: Float!
@@ -1125,11 +1131,13 @@ type PlannerCatalog {
 type PlannerRecipeChoice {
   itemId: ID!
   recipeId: ID!
+  surplusRecipeId: ID!
 }
 
 input PlannerRecipeChoiceInput {
   itemId: ID!
   recipeId: ID!
+  surplusRecipeId: ID! = ""
 }
 
 type PlannerSettings {
@@ -1145,6 +1153,9 @@ input PlannerSettingsInput {
 }
 
 type PlannerNode {
+  inputRateMode: String!
+  outputRateMode: String!
+  exposed: Boolean!
   id: ID!
   kind: String!
   parentId: ID!
@@ -1164,11 +1175,16 @@ type PlannerNode {
   status: String!
   generated: Boolean!
   fixedSupply: Boolean!
+  surplus: Boolean!
+  disabledOutputs: [ID!]!
   settings: PlannerSettings!
   builtFingerprint: String!
 }
 
 input PlannerNodeInput {
+  inputRateMode: String!
+  outputRateMode: String!
+  exposed: Boolean!
   id: ID!
   kind: String!
   parentId: ID!
@@ -1188,11 +1204,14 @@ input PlannerNodeInput {
   status: String!
   generated: Boolean!
   fixedSupply: Boolean!
+  surplus: Boolean! = false
+  disabledOutputs: [ID!]! = []
   settings: PlannerSettingsInput!
   builtFingerprint: String!
 }
 
 type PlannerConnection {
+  generated: Boolean!
   id: ID!
   source: String!
   target: String!
@@ -1203,6 +1222,7 @@ type PlannerConnection {
 }
 
 input PlannerConnectionInput {
+  generated: Boolean!
   id: ID!
   source: String!
   target: String!
@@ -1247,11 +1267,18 @@ input PlannerDocumentInput {
 }
 
 type PlannerDiagram {
+  calculationKey: String!
   id: ID!
   sessionId: ID!
   revision: Int!
   updatedAt: DateTime!
   document: PlannerDocument!
+}
+
+type PlannerImportPreview {
+  name: String!
+  diagramCount: Int!
+  nodeCount: Int!
 }
 
 type PlannerFlow {
@@ -1270,6 +1297,8 @@ type PlannerDiagnostic {
 }
 
 type PlannerNodeResult {
+  exportRate: Float!
+  surplusRate: Float!
   nodeId: ID!
   machines: Int!
   equivalentMachines: Float!
@@ -1294,6 +1323,7 @@ type PlannerConnectionResult {
 }
 
 type PlannerCalculation {
+  calculationKey: String!
   resolved: Boolean!
   diagramId: ID!
   revision: Int!
@@ -1317,6 +1347,7 @@ type PlannerWorkspaceChange {
   diagrams: [PlannerDiagramRevision!]!
 }
 type PlannerDiagramRevision {
+  calculationKey: String!
   id: ID!
   revision: Int!
 }

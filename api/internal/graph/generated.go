@@ -308,18 +308,20 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		ChangePassword       func(childComplexity int, input model.ChangePasswordInput) int
-		CompleteSetup        func(childComplexity int, input model.CompleteSetupInput) int
-		CreateSession        func(childComplexity int, input model.CreateSessionInput) int
-		DeletePlannerDiagram func(childComplexity int, sessionID string, id string, expectedRevision int) int
-		DeleteSession        func(childComplexity int, id string) int
-		DisableAuth          func(childComplexity int, input model.DisableAuthInput) int
-		EnableAuth           func(childComplexity int, input model.EnableAuthInput) int
-		Login                func(childComplexity int, input model.LoginInput) int
-		Logout               func(childComplexity int) int
-		SavePlannerDiagram   func(childComplexity int, sessionID string, id string, expectedRevision int, document planner.Document, expand bool) int
-		UpdateSession        func(childComplexity int, id string, input model.UpdateSessionInput) int
-		UpdateSettings       func(childComplexity int, input model.UpdateSettingsInput) int
+		ChangePassword          func(childComplexity int, input model.ChangePasswordInput) int
+		CompleteSetup           func(childComplexity int, input model.CompleteSetupInput) int
+		CreateSession           func(childComplexity int, input model.CreateSessionInput) int
+		DeletePlannerDiagram    func(childComplexity int, sessionID string, id string, expectedRevision int) int
+		DeleteSession           func(childComplexity int, id string) int
+		DisableAuth             func(childComplexity int, input model.DisableAuthInput) int
+		DuplicatePlannerDiagram func(childComplexity int, sessionID string, id string, name string) int
+		EnableAuth              func(childComplexity int, input model.EnableAuthInput) int
+		ImportPlannerDiagram    func(childComplexity int, sessionID string, name string, json string) int
+		Login                   func(childComplexity int, input model.LoginInput) int
+		Logout                  func(childComplexity int) int
+		SavePlannerDiagram      func(childComplexity int, sessionID string, id string, expectedRevision int, document planner.Document, expand bool) int
+		UpdateSession           func(childComplexity int, id string, input model.UpdateSessionInput) int
+		UpdateSettings          func(childComplexity int, input model.UpdateSettingsInput) int
 	}
 
 	Pipe struct {
@@ -349,6 +351,7 @@ type ComplexityRoot struct {
 	}
 
 	PlannerCalculation struct {
+		CalculationKey    func(childComplexity int) int
 		CatalogVersion    func(childComplexity int) int
 		Connections       func(childComplexity int) int
 		Diagnostics       func(childComplexity int) int
@@ -373,6 +376,7 @@ type ComplexityRoot struct {
 
 	PlannerConnection struct {
 		AvailableLines func(childComplexity int) int
+		Generated      func(childComplexity int) int
 		ID             func(childComplexity int) int
 		ItemID         func(childComplexity int) int
 		Source         func(childComplexity int) int
@@ -401,16 +405,18 @@ type ComplexityRoot struct {
 	}
 
 	PlannerDiagram struct {
-		Document  func(childComplexity int) int
-		ID        func(childComplexity int) int
-		Revision  func(childComplexity int) int
-		SessionID func(childComplexity int) int
-		UpdatedAt func(childComplexity int) int
+		CalculationKey func(childComplexity int) int
+		Document       func(childComplexity int) int
+		ID             func(childComplexity int) int
+		Revision       func(childComplexity int) int
+		SessionID      func(childComplexity int) int
+		UpdatedAt      func(childComplexity int) int
 	}
 
 	PlannerDiagramRevision struct {
-		ID       func(childComplexity int) int
-		Revision func(childComplexity int) int
+		CalculationKey func(childComplexity int) int
+		ID             func(childComplexity int) int
+		Revision       func(childComplexity int) int
 	}
 
 	PlannerDocument struct {
@@ -429,6 +435,12 @@ type ComplexityRoot struct {
 		Rate   func(childComplexity int) int
 	}
 
+	PlannerImportPreview struct {
+		DiagramCount func(childComplexity int) int
+		Name         func(childComplexity int) int
+		NodeCount    func(childComplexity int) int
+	}
+
 	PlannerItem struct {
 		Form        func(childComplexity int) int
 		ID          func(childComplexity int) int
@@ -442,6 +454,7 @@ type ComplexityRoot struct {
 		BoostPerSlot       func(childComplexity int) int
 		BoostPowerExponent func(childComplexity int) int
 		BoostSlots         func(childComplexity int) int
+		BuildCost          func(childComplexity int) int
 		ID                 func(childComplexity int) int
 		MaxClock           func(childComplexity int) int
 		MinClock           func(childComplexity int) int
@@ -455,21 +468,26 @@ type ComplexityRoot struct {
 		BuiltFingerprint func(childComplexity int) int
 		Clock            func(childComplexity int) int
 		Collapsed        func(childComplexity int) int
+		DisabledOutputs  func(childComplexity int) int
+		Exposed          func(childComplexity int) int
 		FixedSupply      func(childComplexity int) int
 		Generated        func(childComplexity int) int
 		Height           func(childComplexity int) int
 		ID               func(childComplexity int) int
+		InputRateMode    func(childComplexity int) int
 		ItemID           func(childComplexity int) int
 		Kind             func(childComplexity int) int
 		LinkedDiagramID  func(childComplexity int) int
 		MachineID        func(childComplexity int) int
 		Name             func(childComplexity int) int
+		OutputRateMode   func(childComplexity int) int
 		ParentID         func(childComplexity int) int
 		Rate             func(childComplexity int) int
 		RecipeID         func(childComplexity int) int
 		Settings         func(childComplexity int) int
 		Somersloops      func(childComplexity int) int
 		Status           func(childComplexity int) int
+		Surplus          func(childComplexity int) int
 		Width            func(childComplexity int) int
 		X                func(childComplexity int) int
 		Y                func(childComplexity int) int
@@ -477,6 +495,7 @@ type ComplexityRoot struct {
 
 	PlannerNodeResult struct {
 		EquivalentMachines func(childComplexity int) int
+		ExportRate         func(childComplexity int) int
 		Fingerprint        func(childComplexity int) int
 		Inputs             func(childComplexity int) int
 		InstalledPowerMax  func(childComplexity int) int
@@ -487,6 +506,7 @@ type ComplexityRoot struct {
 		PowerMax           func(childComplexity int) int
 		PowerMin           func(childComplexity int) int
 		Somersloops        func(childComplexity int) int
+		SurplusRate        func(childComplexity int) int
 		Utilization        func(childComplexity int) int
 	}
 
@@ -504,8 +524,9 @@ type ComplexityRoot struct {
 	}
 
 	PlannerRecipeChoice struct {
-		ItemID   func(childComplexity int) int
-		RecipeID func(childComplexity int) int
+		ItemID          func(childComplexity int) int
+		RecipeID        func(childComplexity int) int
+		SurplusRecipeID func(childComplexity int) int
 	}
 
 	PlannerSettings struct {
@@ -591,6 +612,7 @@ type ComplexityRoot struct {
 		DroneStations         func(childComplexity int, sessionID string) int
 		Drones                func(childComplexity int, sessionID string) int
 		Explorers             func(childComplexity int, sessionID string) int
+		ExportPlannerDiagram  func(childComplexity int, sessionID string, id string) int
 		FactoryStats          func(childComplexity int, sessionID string) int
 		FactoryStatsHistory   func(childComplexity int, sessionID string, since *int, bucketSeconds *int) int
 		GeneratorStats        func(childComplexity int, sessionID string) int
@@ -603,6 +625,7 @@ type ComplexityRoot struct {
 		Pipes                 func(childComplexity int, sessionID string) int
 		PlannerWorkspace      func(childComplexity int, sessionID string, calculate bool) int
 		Players               func(childComplexity int, sessionID string) int
+		PreviewPlannerDiagram func(childComplexity int, sessionID string, id string, document planner.Document) int
 		PreviewSession        func(childComplexity int, address string) int
 		ProdStats             func(childComplexity int, sessionID string) int
 		ProdStatsHistory      func(childComplexity int, sessionID string, since *int, bucketSeconds *int) int
@@ -624,6 +647,7 @@ type ComplexityRoot struct {
 		Trains                func(childComplexity int, sessionID string) int
 		TruckStations         func(childComplexity int, sessionID string) int
 		Trucks                func(childComplexity int, sessionID string) int
+		ValidatePlannerImport func(childComplexity int, sessionID string, json string) int
 		VehiclePaths          func(childComplexity int, sessionID string) int
 	}
 
@@ -943,6 +967,8 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	SavePlannerDiagram(ctx context.Context, sessionID string, id string, expectedRevision int, document planner.Document, expand bool) (*planner.Diagram, error)
 	DeletePlannerDiagram(ctx context.Context, sessionID string, id string, expectedRevision int) (bool, error)
+	ImportPlannerDiagram(ctx context.Context, sessionID string, name string, json string) (*planner.Diagram, error)
+	DuplicatePlannerDiagram(ctx context.Context, sessionID string, id string, name string) (*planner.Diagram, error)
 	Login(ctx context.Context, input model.LoginInput) (*model.LoginResult, error)
 	Logout(ctx context.Context) (*model.LogoutResult, error)
 	CompleteSetup(ctx context.Context, input model.CompleteSetupInput) (*model.SetupResult, error)
@@ -955,7 +981,10 @@ type MutationResolver interface {
 	UpdateSettings(ctx context.Context, input model.UpdateSettingsInput) (*model.Settings, error)
 }
 type QueryResolver interface {
+	PreviewPlannerDiagram(ctx context.Context, sessionID string, id string, document planner.Document) (*planner.Workspace, error)
 	PlannerWorkspace(ctx context.Context, sessionID string, calculate bool) (*planner.Workspace, error)
+	ExportPlannerDiagram(ctx context.Context, sessionID string, id string) (string, error)
+	ValidatePlannerImport(ctx context.Context, sessionID string, json string) (*model.PlannerImportPreview, error)
 	Sessions(ctx context.Context) ([]*model.Session, error)
 	Session(ctx context.Context, id string) (*model.Session, error)
 	PreviewSession(ctx context.Context, address string) (*model.SessionInfo, error)
@@ -2148,6 +2177,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Mutation.DisableAuth(childComplexity, args["input"].(model.DisableAuthInput)), true
+	case "Mutation.duplicatePlannerDiagram":
+		if e.ComplexityRoot.Mutation.DuplicatePlannerDiagram == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_duplicatePlannerDiagram_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Mutation.DuplicatePlannerDiagram(childComplexity, args["sessionId"].(string), args["id"].(string), args["name"].(string)), true
 	case "Mutation.enableAuth":
 		if e.ComplexityRoot.Mutation.EnableAuth == nil {
 			break
@@ -2159,6 +2199,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Mutation.EnableAuth(childComplexity, args["input"].(model.EnableAuthInput)), true
+	case "Mutation.importPlannerDiagram":
+		if e.ComplexityRoot.Mutation.ImportPlannerDiagram == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_importPlannerDiagram_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Mutation.ImportPlannerDiagram(childComplexity, args["sessionId"].(string), args["name"].(string), args["json"].(string)), true
 	case "Mutation.login":
 		if e.ComplexityRoot.Mutation.Login == nil {
 			break
@@ -2315,6 +2366,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.PlannerAmount.ItemID(childComplexity), true
 
+	case "PlannerCalculation.calculationKey":
+		if e.ComplexityRoot.PlannerCalculation.CalculationKey == nil {
+			break
+		}
+
+		return e.ComplexityRoot.PlannerCalculation.CalculationKey(childComplexity), true
 	case "PlannerCalculation.catalogVersion":
 		if e.ComplexityRoot.PlannerCalculation.CatalogVersion == nil {
 			break
@@ -2425,6 +2482,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.PlannerConnection.AvailableLines(childComplexity), true
+	case "PlannerConnection.generated":
+		if e.ComplexityRoot.PlannerConnection.Generated == nil {
+			break
+		}
+
+		return e.ComplexityRoot.PlannerConnection.Generated(childComplexity), true
 	case "PlannerConnection.id":
 		if e.ComplexityRoot.PlannerConnection.ID == nil {
 			break
@@ -2542,6 +2605,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.PlannerDiagnostic.Rate(childComplexity), true
 
+	case "PlannerDiagram.calculationKey":
+		if e.ComplexityRoot.PlannerDiagram.CalculationKey == nil {
+			break
+		}
+
+		return e.ComplexityRoot.PlannerDiagram.CalculationKey(childComplexity), true
 	case "PlannerDiagram.document":
 		if e.ComplexityRoot.PlannerDiagram.Document == nil {
 			break
@@ -2573,6 +2642,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.PlannerDiagram.UpdatedAt(childComplexity), true
 
+	case "PlannerDiagramRevision.calculationKey":
+		if e.ComplexityRoot.PlannerDiagramRevision.CalculationKey == nil {
+			break
+		}
+
+		return e.ComplexityRoot.PlannerDiagramRevision.CalculationKey(childComplexity), true
 	case "PlannerDiagramRevision.id":
 		if e.ComplexityRoot.PlannerDiagramRevision.ID == nil {
 			break
@@ -2648,6 +2723,25 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.PlannerFlow.Rate(childComplexity), true
 
+	case "PlannerImportPreview.diagramCount":
+		if e.ComplexityRoot.PlannerImportPreview.DiagramCount == nil {
+			break
+		}
+
+		return e.ComplexityRoot.PlannerImportPreview.DiagramCount(childComplexity), true
+	case "PlannerImportPreview.name":
+		if e.ComplexityRoot.PlannerImportPreview.Name == nil {
+			break
+		}
+
+		return e.ComplexityRoot.PlannerImportPreview.Name(childComplexity), true
+	case "PlannerImportPreview.nodeCount":
+		if e.ComplexityRoot.PlannerImportPreview.NodeCount == nil {
+			break
+		}
+
+		return e.ComplexityRoot.PlannerImportPreview.NodeCount(childComplexity), true
+
 	case "PlannerItem.form":
 		if e.ComplexityRoot.PlannerItem.Form == nil {
 			break
@@ -2703,6 +2797,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.PlannerMachine.BoostSlots(childComplexity), true
+	case "PlannerMachine.buildCost":
+		if e.ComplexityRoot.PlannerMachine.BuildCost == nil {
+			break
+		}
+
+		return e.ComplexityRoot.PlannerMachine.BuildCost(childComplexity), true
 	case "PlannerMachine.id":
 		if e.ComplexityRoot.PlannerMachine.ID == nil {
 			break
@@ -2764,6 +2864,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.PlannerNode.Collapsed(childComplexity), true
+	case "PlannerNode.disabledOutputs":
+		if e.ComplexityRoot.PlannerNode.DisabledOutputs == nil {
+			break
+		}
+
+		return e.ComplexityRoot.PlannerNode.DisabledOutputs(childComplexity), true
+	case "PlannerNode.exposed":
+		if e.ComplexityRoot.PlannerNode.Exposed == nil {
+			break
+		}
+
+		return e.ComplexityRoot.PlannerNode.Exposed(childComplexity), true
 	case "PlannerNode.fixedSupply":
 		if e.ComplexityRoot.PlannerNode.FixedSupply == nil {
 			break
@@ -2788,6 +2900,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.PlannerNode.ID(childComplexity), true
+	case "PlannerNode.inputRateMode":
+		if e.ComplexityRoot.PlannerNode.InputRateMode == nil {
+			break
+		}
+
+		return e.ComplexityRoot.PlannerNode.InputRateMode(childComplexity), true
 	case "PlannerNode.itemId":
 		if e.ComplexityRoot.PlannerNode.ItemID == nil {
 			break
@@ -2818,6 +2936,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.PlannerNode.Name(childComplexity), true
+	case "PlannerNode.outputRateMode":
+		if e.ComplexityRoot.PlannerNode.OutputRateMode == nil {
+			break
+		}
+
+		return e.ComplexityRoot.PlannerNode.OutputRateMode(childComplexity), true
 	case "PlannerNode.parentId":
 		if e.ComplexityRoot.PlannerNode.ParentID == nil {
 			break
@@ -2854,6 +2978,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.PlannerNode.Status(childComplexity), true
+	case "PlannerNode.surplus":
+		if e.ComplexityRoot.PlannerNode.Surplus == nil {
+			break
+		}
+
+		return e.ComplexityRoot.PlannerNode.Surplus(childComplexity), true
 	case "PlannerNode.width":
 		if e.ComplexityRoot.PlannerNode.Width == nil {
 			break
@@ -2879,6 +3009,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.PlannerNodeResult.EquivalentMachines(childComplexity), true
+	case "PlannerNodeResult.exportRate":
+		if e.ComplexityRoot.PlannerNodeResult.ExportRate == nil {
+			break
+		}
+
+		return e.ComplexityRoot.PlannerNodeResult.ExportRate(childComplexity), true
 	case "PlannerNodeResult.fingerprint":
 		if e.ComplexityRoot.PlannerNodeResult.Fingerprint == nil {
 			break
@@ -2939,6 +3075,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.PlannerNodeResult.Somersloops(childComplexity), true
+	case "PlannerNodeResult.surplusRate":
+		if e.ComplexityRoot.PlannerNodeResult.SurplusRate == nil {
+			break
+		}
+
+		return e.ComplexityRoot.PlannerNodeResult.SurplusRate(childComplexity), true
 	case "PlannerNodeResult.utilization":
 		if e.ComplexityRoot.PlannerNodeResult.Utilization == nil {
 			break
@@ -3019,6 +3161,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.PlannerRecipeChoice.RecipeID(childComplexity), true
+	case "PlannerRecipeChoice.surplusRecipeId":
+		if e.ComplexityRoot.PlannerRecipeChoice.SurplusRecipeID == nil {
+			break
+		}
+
+		return e.ComplexityRoot.PlannerRecipeChoice.SurplusRecipeID(childComplexity), true
 
 	case "PlannerSettings.beltTier":
 		if e.ComplexityRoot.PlannerSettings.BeltTier == nil {
@@ -3365,6 +3513,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Query.Explorers(childComplexity, args["sessionId"].(string)), true
+	case "Query.exportPlannerDiagram":
+		if e.ComplexityRoot.Query.ExportPlannerDiagram == nil {
+			break
+		}
+
+		args, err := ec.field_Query_exportPlannerDiagram_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.ExportPlannerDiagram(childComplexity, args["sessionId"].(string), args["id"].(string)), true
 	case "Query.factoryStats":
 		if e.ComplexityRoot.Query.FactoryStats == nil {
 			break
@@ -3498,6 +3657,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Query.Players(childComplexity, args["sessionId"].(string)), true
+	case "Query.previewPlannerDiagram":
+		if e.ComplexityRoot.Query.PreviewPlannerDiagram == nil {
+			break
+		}
+
+		args, err := ec.field_Query_previewPlannerDiagram_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.PreviewPlannerDiagram(childComplexity, args["sessionId"].(string), args["id"].(string), args["document"].(planner.Document)), true
 	case "Query.previewSession":
 		if e.ComplexityRoot.Query.PreviewSession == nil {
 			break
@@ -3719,6 +3889,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Query.Trucks(childComplexity, args["sessionId"].(string)), true
+	case "Query.validatePlannerImport":
+		if e.ComplexityRoot.Query.ValidatePlannerImport == nil {
+			break
+		}
+
+		args, err := ec.field_Query_validatePlannerImport_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.ValidatePlannerImport(childComplexity, args["sessionId"].(string), args["json"].(string)), true
 	case "Query.vehiclePaths":
 		if e.ComplexityRoot.Query.VehiclePaths == nil {
 			break
@@ -6345,7 +6526,10 @@ type ChangePasswordResult {
 # ============================================================================
 
 type Query {
+  previewPlannerDiagram(sessionId: ID!, id: ID!, document: PlannerDocumentInput!): PlannerWorkspace! @auth
   plannerWorkspace(sessionId: ID!, calculate: Boolean! = false): PlannerWorkspace! @auth
+  exportPlannerDiagram(sessionId: ID!, id: ID!): String! @auth
+  validatePlannerImport(sessionId: ID!, json: String!): PlannerImportPreview! @auth
   sessions: [Session!]! @auth
   session(id: ID!): Session @auth
   previewSession(address: String!): SessionInfo! @auth
@@ -6397,6 +6581,8 @@ type Query {
 type Mutation {
   savePlannerDiagram(sessionId: ID!, id: ID!, expectedRevision: Int!, document: PlannerDocumentInput!, expand: Boolean! = false): PlannerDiagram! @auth
   deletePlannerDiagram(sessionId: ID!, id: ID!, expectedRevision: Int!): Boolean! @auth
+  importPlannerDiagram(sessionId: ID!, name: String!, json: String!): PlannerDiagram! @auth
+  duplicatePlannerDiagram(sessionId: ID!, id: ID!, name: String!): PlannerDiagram! @auth
   login(input: LoginInput!): LoginResult!
   logout: LogoutResult! @auth
 
@@ -6476,6 +6662,7 @@ type PlannerItem {
 }
 
 type PlannerMachine {
+  buildCost: [PlannerAmount!]!
   id: ID!
   name: String!
   power: Float!
@@ -6521,11 +6708,13 @@ type PlannerCatalog {
 type PlannerRecipeChoice {
   itemId: ID!
   recipeId: ID!
+  surplusRecipeId: ID!
 }
 
 input PlannerRecipeChoiceInput {
   itemId: ID!
   recipeId: ID!
+  surplusRecipeId: ID! = ""
 }
 
 type PlannerSettings {
@@ -6541,6 +6730,9 @@ input PlannerSettingsInput {
 }
 
 type PlannerNode {
+  inputRateMode: String!
+  outputRateMode: String!
+  exposed: Boolean!
   id: ID!
   kind: String!
   parentId: ID!
@@ -6560,11 +6752,16 @@ type PlannerNode {
   status: String!
   generated: Boolean!
   fixedSupply: Boolean!
+  surplus: Boolean!
+  disabledOutputs: [ID!]!
   settings: PlannerSettings!
   builtFingerprint: String!
 }
 
 input PlannerNodeInput {
+  inputRateMode: String!
+  outputRateMode: String!
+  exposed: Boolean!
   id: ID!
   kind: String!
   parentId: ID!
@@ -6584,11 +6781,14 @@ input PlannerNodeInput {
   status: String!
   generated: Boolean!
   fixedSupply: Boolean!
+  surplus: Boolean! = false
+  disabledOutputs: [ID!]! = []
   settings: PlannerSettingsInput!
   builtFingerprint: String!
 }
 
 type PlannerConnection {
+  generated: Boolean!
   id: ID!
   source: String!
   target: String!
@@ -6599,6 +6799,7 @@ type PlannerConnection {
 }
 
 input PlannerConnectionInput {
+  generated: Boolean!
   id: ID!
   source: String!
   target: String!
@@ -6643,11 +6844,18 @@ input PlannerDocumentInput {
 }
 
 type PlannerDiagram {
+  calculationKey: String!
   id: ID!
   sessionId: ID!
   revision: Int!
   updatedAt: DateTime!
   document: PlannerDocument!
+}
+
+type PlannerImportPreview {
+  name: String!
+  diagramCount: Int!
+  nodeCount: Int!
 }
 
 type PlannerFlow {
@@ -6666,6 +6874,8 @@ type PlannerDiagnostic {
 }
 
 type PlannerNodeResult {
+  exportRate: Float!
+  surplusRate: Float!
   nodeId: ID!
   machines: Int!
   equivalentMachines: Float!
@@ -6690,6 +6900,7 @@ type PlannerConnectionResult {
 }
 
 type PlannerCalculation {
+  calculationKey: String!
   resolved: Boolean!
   diagramId: ID!
   revision: Int!
@@ -6713,6 +6924,7 @@ type PlannerWorkspaceChange {
   diagrams: [PlannerDiagramRevision!]!
 }
 type PlannerDiagramRevision {
+  calculationKey: String!
   id: ID!
   revision: Int!
 }
@@ -6800,6 +7012,27 @@ func (ec *executionContext) field_Mutation_disableAuth_args(ctx context.Context,
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_duplicatePlannerDiagram_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "sessionId", ec.unmarshalNID2string)
+	if err != nil {
+		return nil, err
+	}
+	args["sessionId"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg1
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "name", ec.unmarshalNString2string)
+	if err != nil {
+		return nil, err
+	}
+	args["name"] = arg2
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_enableAuth_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -6808,6 +7041,27 @@ func (ec *executionContext) field_Mutation_enableAuth_args(ctx context.Context, 
 		return nil, err
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_importPlannerDiagram_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "sessionId", ec.unmarshalNID2string)
+	if err != nil {
+		return nil, err
+	}
+	args["sessionId"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "name", ec.unmarshalNString2string)
+	if err != nil {
+		return nil, err
+	}
+	args["name"] = arg1
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "json", ec.unmarshalNString2string)
+	if err != nil {
+		return nil, err
+	}
+	args["json"] = arg2
 	return args, nil
 }
 
@@ -6989,6 +7243,22 @@ func (ec *executionContext) field_Query_explorers_args(ctx context.Context, rawA
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_exportPlannerDiagram_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "sessionId", ec.unmarshalNID2string)
+	if err != nil {
+		return nil, err
+	}
+	args["sessionId"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_factoryStatsHistory_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -7143,6 +7413,27 @@ func (ec *executionContext) field_Query_players_args(ctx context.Context, rawArg
 		return nil, err
 	}
 	args["sessionId"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_previewPlannerDiagram_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "sessionId", ec.unmarshalNID2string)
+	if err != nil {
+		return nil, err
+	}
+	args["sessionId"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNID2string)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg1
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "document", ec.unmarshalNPlannerDocumentInput2apiᚋinternalᚋplannerᚐDocument)
+	if err != nil {
+		return nil, err
+	}
+	args["document"] = arg2
 	return args, nil
 }
 
@@ -7372,6 +7663,22 @@ func (ec *executionContext) field_Query_trucks_args(ctx context.Context, rawArgs
 		return nil, err
 	}
 	args["sessionId"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_validatePlannerImport_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "sessionId", ec.unmarshalNID2string)
+	if err != nil {
+		return nil, err
+	}
+	args["sessionId"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "json", ec.unmarshalNString2string)
+	if err != nil {
+		return nil, err
+	}
+	args["json"] = arg1
 	return args, nil
 }
 
@@ -13056,6 +13363,8 @@ func (ec *executionContext) fieldContext_Mutation_savePlannerDiagram(ctx context
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "calculationKey":
+				return ec.fieldContext_PlannerDiagram_calculationKey(ctx, field)
 			case "id":
 				return ec.fieldContext_PlannerDiagram_id(ctx, field)
 			case "sessionId":
@@ -13132,6 +13441,142 @@ func (ec *executionContext) fieldContext_Mutation_deletePlannerDiagram(ctx conte
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_deletePlannerDiagram_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_importPlannerDiagram(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Mutation_importPlannerDiagram,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Mutation().ImportPlannerDiagram(ctx, fc.Args["sessionId"].(string), fc.Args["name"].(string), fc.Args["json"].(string))
+		},
+		func(ctx context.Context, next graphql.Resolver) graphql.Resolver {
+			directive0 := next
+
+			directive1 := func(ctx context.Context) (any, error) {
+				if ec.Directives.Auth == nil {
+					var zeroVal *planner.Diagram
+					return zeroVal, errors.New("directive auth is not implemented")
+				}
+				return ec.Directives.Auth(ctx, nil, directive0)
+			}
+
+			next = directive1
+			return next
+		},
+		ec.marshalNPlannerDiagram2ᚖapiᚋinternalᚋplannerᚐDiagram,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Mutation_importPlannerDiagram(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "calculationKey":
+				return ec.fieldContext_PlannerDiagram_calculationKey(ctx, field)
+			case "id":
+				return ec.fieldContext_PlannerDiagram_id(ctx, field)
+			case "sessionId":
+				return ec.fieldContext_PlannerDiagram_sessionId(ctx, field)
+			case "revision":
+				return ec.fieldContext_PlannerDiagram_revision(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_PlannerDiagram_updatedAt(ctx, field)
+			case "document":
+				return ec.fieldContext_PlannerDiagram_document(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PlannerDiagram", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_importPlannerDiagram_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_duplicatePlannerDiagram(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Mutation_duplicatePlannerDiagram,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Mutation().DuplicatePlannerDiagram(ctx, fc.Args["sessionId"].(string), fc.Args["id"].(string), fc.Args["name"].(string))
+		},
+		func(ctx context.Context, next graphql.Resolver) graphql.Resolver {
+			directive0 := next
+
+			directive1 := func(ctx context.Context) (any, error) {
+				if ec.Directives.Auth == nil {
+					var zeroVal *planner.Diagram
+					return zeroVal, errors.New("directive auth is not implemented")
+				}
+				return ec.Directives.Auth(ctx, nil, directive0)
+			}
+
+			next = directive1
+			return next
+		},
+		ec.marshalNPlannerDiagram2ᚖapiᚋinternalᚋplannerᚐDiagram,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Mutation_duplicatePlannerDiagram(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "calculationKey":
+				return ec.fieldContext_PlannerDiagram_calculationKey(ctx, field)
+			case "id":
+				return ec.fieldContext_PlannerDiagram_id(ctx, field)
+			case "sessionId":
+				return ec.fieldContext_PlannerDiagram_sessionId(ctx, field)
+			case "revision":
+				return ec.fieldContext_PlannerDiagram_revision(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_PlannerDiagram_updatedAt(ctx, field)
+			case "document":
+				return ec.fieldContext_PlannerDiagram_document(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PlannerDiagram", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_duplicatePlannerDiagram_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -14245,6 +14690,35 @@ func (ec *executionContext) fieldContext_PlannerAmount_amount(_ context.Context,
 	return fc, nil
 }
 
+func (ec *executionContext) _PlannerCalculation_calculationKey(ctx context.Context, field graphql.CollectedField, obj *planner.Calculation) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PlannerCalculation_calculationKey,
+		func(ctx context.Context) (any, error) {
+			return obj.CalculationKey, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PlannerCalculation_calculationKey(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlannerCalculation",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _PlannerCalculation_resolved(ctx context.Context, field graphql.CollectedField, obj *planner.Calculation) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -14414,6 +14888,10 @@ func (ec *executionContext) fieldContext_PlannerCalculation_nodes(_ context.Cont
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "exportRate":
+				return ec.fieldContext_PlannerNodeResult_exportRate(ctx, field)
+			case "surplusRate":
+				return ec.fieldContext_PlannerNodeResult_surplusRate(ctx, field)
 			case "nodeId":
 				return ec.fieldContext_PlannerNodeResult_nodeId(ctx, field)
 			case "machines":
@@ -14687,6 +15165,8 @@ func (ec *executionContext) fieldContext_PlannerCatalog_machines(_ context.Conte
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "buildCost":
+				return ec.fieldContext_PlannerMachine_buildCost(ctx, field)
 			case "id":
 				return ec.fieldContext_PlannerMachine_id(ctx, field)
 			case "name":
@@ -14853,6 +15333,35 @@ func (ec *executionContext) fieldContext_PlannerCatalog_unlocks(_ context.Contex
 				return ec.fieldContext_PlannerUnlock_unlocked(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type PlannerUnlock", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PlannerConnection_generated(ctx context.Context, field graphql.CollectedField, obj *planner.Connection) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PlannerConnection_generated,
+		func(ctx context.Context) (any, error) {
+			return obj.Generated, nil
+		},
+		nil,
+		ec.marshalNBoolean2bool,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PlannerConnection_generated(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlannerConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -15438,6 +15947,35 @@ func (ec *executionContext) fieldContext_PlannerDiagnostic_rate(_ context.Contex
 	return fc, nil
 }
 
+func (ec *executionContext) _PlannerDiagram_calculationKey(ctx context.Context, field graphql.CollectedField, obj *planner.Diagram) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PlannerDiagram_calculationKey,
+		func(ctx context.Context) (any, error) {
+			return obj.CalculationKey, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PlannerDiagram_calculationKey(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlannerDiagram",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _PlannerDiagram_id(ctx context.Context, field graphql.CollectedField, obj *planner.Diagram) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -15596,6 +16134,35 @@ func (ec *executionContext) fieldContext_PlannerDiagram_document(_ context.Conte
 				return ec.fieldContext_PlannerDocument_catalogVersion(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type PlannerDocument", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PlannerDiagramRevision_calculationKey(ctx context.Context, field graphql.CollectedField, obj *planner.DiagramRevision) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PlannerDiagramRevision_calculationKey,
+		func(ctx context.Context) (any, error) {
+			return obj.CalculationKey, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PlannerDiagramRevision_calculationKey(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlannerDiagramRevision",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -15807,6 +16374,12 @@ func (ec *executionContext) fieldContext_PlannerDocument_nodes(_ context.Context
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "inputRateMode":
+				return ec.fieldContext_PlannerNode_inputRateMode(ctx, field)
+			case "outputRateMode":
+				return ec.fieldContext_PlannerNode_outputRateMode(ctx, field)
+			case "exposed":
+				return ec.fieldContext_PlannerNode_exposed(ctx, field)
 			case "id":
 				return ec.fieldContext_PlannerNode_id(ctx, field)
 			case "kind":
@@ -15845,6 +16418,10 @@ func (ec *executionContext) fieldContext_PlannerDocument_nodes(_ context.Context
 				return ec.fieldContext_PlannerNode_generated(ctx, field)
 			case "fixedSupply":
 				return ec.fieldContext_PlannerNode_fixedSupply(ctx, field)
+			case "surplus":
+				return ec.fieldContext_PlannerNode_surplus(ctx, field)
+			case "disabledOutputs":
+				return ec.fieldContext_PlannerNode_disabledOutputs(ctx, field)
 			case "settings":
 				return ec.fieldContext_PlannerNode_settings(ctx, field)
 			case "builtFingerprint":
@@ -15880,6 +16457,8 @@ func (ec *executionContext) fieldContext_PlannerDocument_connections(_ context.C
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "generated":
+				return ec.fieldContext_PlannerConnection_generated(ctx, field)
 			case "id":
 				return ec.fieldContext_PlannerConnection_id(ctx, field)
 			case "source":
@@ -16020,6 +16599,93 @@ func (ec *executionContext) fieldContext_PlannerFlow_rate(_ context.Context, fie
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PlannerImportPreview_name(ctx context.Context, field graphql.CollectedField, obj *model.PlannerImportPreview) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PlannerImportPreview_name,
+		func(ctx context.Context) (any, error) {
+			return obj.Name, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PlannerImportPreview_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlannerImportPreview",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PlannerImportPreview_diagramCount(ctx context.Context, field graphql.CollectedField, obj *model.PlannerImportPreview) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PlannerImportPreview_diagramCount,
+		func(ctx context.Context) (any, error) {
+			return obj.DiagramCount, nil
+		},
+		nil,
+		ec.marshalNInt2int,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PlannerImportPreview_diagramCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlannerImportPreview",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PlannerImportPreview_nodeCount(ctx context.Context, field graphql.CollectedField, obj *model.PlannerImportPreview) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PlannerImportPreview_nodeCount,
+		func(ctx context.Context) (any, error) {
+			return obj.NodeCount, nil
+		},
+		nil,
+		ec.marshalNInt2int,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PlannerImportPreview_nodeCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlannerImportPreview",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -16194,6 +16860,41 @@ func (ec *executionContext) fieldContext_PlannerItem_sinkable(_ context.Context,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PlannerMachine_buildCost(ctx context.Context, field graphql.CollectedField, obj *planner.Machine) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PlannerMachine_buildCost,
+		func(ctx context.Context) (any, error) {
+			return obj.BuildCost, nil
+		},
+		nil,
+		ec.marshalNPlannerAmount2ᚕapiᚋinternalᚋplannerᚐAmountᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PlannerMachine_buildCost(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlannerMachine",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "itemId":
+				return ec.fieldContext_PlannerAmount_itemId(ctx, field)
+			case "amount":
+				return ec.fieldContext_PlannerAmount_amount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PlannerAmount", field.Name)
 		},
 	}
 	return fc, nil
@@ -16484,6 +17185,93 @@ func (ec *executionContext) fieldContext_PlannerMachine_maxClock(_ context.Conte
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PlannerNode_inputRateMode(ctx context.Context, field graphql.CollectedField, obj *planner.Node) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PlannerNode_inputRateMode,
+		func(ctx context.Context) (any, error) {
+			return obj.InputRateMode, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PlannerNode_inputRateMode(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlannerNode",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PlannerNode_outputRateMode(ctx context.Context, field graphql.CollectedField, obj *planner.Node) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PlannerNode_outputRateMode,
+		func(ctx context.Context) (any, error) {
+			return obj.OutputRateMode, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PlannerNode_outputRateMode(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlannerNode",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PlannerNode_exposed(ctx context.Context, field graphql.CollectedField, obj *planner.Node) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PlannerNode_exposed,
+		func(ctx context.Context) (any, error) {
+			return obj.Exposed, nil
+		},
+		nil,
+		ec.marshalNBoolean2bool,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PlannerNode_exposed(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlannerNode",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -17040,6 +17828,64 @@ func (ec *executionContext) fieldContext_PlannerNode_fixedSupply(_ context.Conte
 	return fc, nil
 }
 
+func (ec *executionContext) _PlannerNode_surplus(ctx context.Context, field graphql.CollectedField, obj *planner.Node) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PlannerNode_surplus,
+		func(ctx context.Context) (any, error) {
+			return obj.Surplus, nil
+		},
+		nil,
+		ec.marshalNBoolean2bool,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PlannerNode_surplus(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlannerNode",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PlannerNode_disabledOutputs(ctx context.Context, field graphql.CollectedField, obj *planner.Node) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PlannerNode_disabledOutputs,
+		func(ctx context.Context) (any, error) {
+			return obj.DisabledOutputs, nil
+		},
+		nil,
+		ec.marshalNID2ᚕstringᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PlannerNode_disabledOutputs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlannerNode",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _PlannerNode_settings(ctx context.Context, field graphql.CollectedField, obj *planner.Node) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -17101,6 +17947,64 @@ func (ec *executionContext) fieldContext_PlannerNode_builtFingerprint(_ context.
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PlannerNodeResult_exportRate(ctx context.Context, field graphql.CollectedField, obj *planner.NodeResult) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PlannerNodeResult_exportRate,
+		func(ctx context.Context) (any, error) {
+			return obj.ExportRate, nil
+		},
+		nil,
+		ec.marshalNFloat2float64,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PlannerNodeResult_exportRate(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlannerNodeResult",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PlannerNodeResult_surplusRate(ctx context.Context, field graphql.CollectedField, obj *planner.NodeResult) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PlannerNodeResult_surplusRate,
+		func(ctx context.Context) (any, error) {
+			return obj.SurplusRate, nil
+		},
+		nil,
+		ec.marshalNFloat2float64,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PlannerNodeResult_surplusRate(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlannerNodeResult",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
 		},
 	}
 	return fc, nil
@@ -17826,6 +18730,35 @@ func (ec *executionContext) fieldContext_PlannerRecipeChoice_recipeId(_ context.
 	return fc, nil
 }
 
+func (ec *executionContext) _PlannerRecipeChoice_surplusRecipeId(ctx context.Context, field graphql.CollectedField, obj *planner.RecipeChoice) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_PlannerRecipeChoice_surplusRecipeId,
+		func(ctx context.Context) (any, error) {
+			return obj.SurplusRecipeID, nil
+		},
+		nil,
+		ec.marshalNID2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_PlannerRecipeChoice_surplusRecipeId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlannerRecipeChoice",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _PlannerSettings_recipes(ctx context.Context, field graphql.CollectedField, obj *planner.Settings) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -17854,6 +18787,8 @@ func (ec *executionContext) fieldContext_PlannerSettings_recipes(_ context.Conte
 				return ec.fieldContext_PlannerRecipeChoice_itemId(ctx, field)
 			case "recipeId":
 				return ec.fieldContext_PlannerRecipeChoice_recipeId(ctx, field)
+			case "surplusRecipeId":
+				return ec.fieldContext_PlannerRecipeChoice_surplusRecipeId(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type PlannerRecipeChoice", field.Name)
 		},
@@ -18166,6 +19101,8 @@ func (ec *executionContext) fieldContext_PlannerWorkspace_diagrams(_ context.Con
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "calculationKey":
+				return ec.fieldContext_PlannerDiagram_calculationKey(ctx, field)
 			case "id":
 				return ec.fieldContext_PlannerDiagram_id(ctx, field)
 			case "sessionId":
@@ -18207,6 +19144,8 @@ func (ec *executionContext) fieldContext_PlannerWorkspace_calculations(_ context
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "calculationKey":
+				return ec.fieldContext_PlannerCalculation_calculationKey(ctx, field)
 			case "resolved":
 				return ec.fieldContext_PlannerCalculation_resolved(ctx, field)
 			case "diagramId":
@@ -18312,6 +19251,8 @@ func (ec *executionContext) fieldContext_PlannerWorkspaceChange_diagrams(_ conte
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "calculationKey":
+				return ec.fieldContext_PlannerDiagramRevision_calculationKey(ctx, field)
 			case "id":
 				return ec.fieldContext_PlannerDiagramRevision_id(ctx, field)
 			case "revision":
@@ -19036,6 +19977,70 @@ func (ec *executionContext) fieldContext_ProdStatsHistoryPoint_prodStats(_ conte
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_previewPlannerDiagram(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_previewPlannerDiagram,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().PreviewPlannerDiagram(ctx, fc.Args["sessionId"].(string), fc.Args["id"].(string), fc.Args["document"].(planner.Document))
+		},
+		func(ctx context.Context, next graphql.Resolver) graphql.Resolver {
+			directive0 := next
+
+			directive1 := func(ctx context.Context) (any, error) {
+				if ec.Directives.Auth == nil {
+					var zeroVal *planner.Workspace
+					return zeroVal, errors.New("directive auth is not implemented")
+				}
+				return ec.Directives.Auth(ctx, nil, directive0)
+			}
+
+			next = directive1
+			return next
+		},
+		ec.marshalNPlannerWorkspace2ᚖapiᚋinternalᚋplannerᚐWorkspace,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_previewPlannerDiagram(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "revision":
+				return ec.fieldContext_PlannerWorkspace_revision(ctx, field)
+			case "catalog":
+				return ec.fieldContext_PlannerWorkspace_catalog(ctx, field)
+			case "diagrams":
+				return ec.fieldContext_PlannerWorkspace_diagrams(ctx, field)
+			case "calculations":
+				return ec.fieldContext_PlannerWorkspace_calculations(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PlannerWorkspace", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_previewPlannerDiagram_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_plannerWorkspace(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -19094,6 +20099,122 @@ func (ec *executionContext) fieldContext_Query_plannerWorkspace(ctx context.Cont
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_plannerWorkspace_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_exportPlannerDiagram(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_exportPlannerDiagram,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().ExportPlannerDiagram(ctx, fc.Args["sessionId"].(string), fc.Args["id"].(string))
+		},
+		func(ctx context.Context, next graphql.Resolver) graphql.Resolver {
+			directive0 := next
+
+			directive1 := func(ctx context.Context) (any, error) {
+				if ec.Directives.Auth == nil {
+					var zeroVal string
+					return zeroVal, errors.New("directive auth is not implemented")
+				}
+				return ec.Directives.Auth(ctx, nil, directive0)
+			}
+
+			next = directive1
+			return next
+		},
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_exportPlannerDiagram(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_exportPlannerDiagram_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_validatePlannerImport(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_validatePlannerImport,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().ValidatePlannerImport(ctx, fc.Args["sessionId"].(string), fc.Args["json"].(string))
+		},
+		func(ctx context.Context, next graphql.Resolver) graphql.Resolver {
+			directive0 := next
+
+			directive1 := func(ctx context.Context) (any, error) {
+				if ec.Directives.Auth == nil {
+					var zeroVal *model.PlannerImportPreview
+					return zeroVal, errors.New("directive auth is not implemented")
+				}
+				return ec.Directives.Auth(ctx, nil, directive0)
+			}
+
+			next = directive1
+			return next
+		},
+		ec.marshalNPlannerImportPreview2ᚖapiᚋinternalᚋgraphᚋmodelᚐPlannerImportPreview,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_validatePlannerImport(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_PlannerImportPreview_name(ctx, field)
+			case "diagramCount":
+				return ec.fieldContext_PlannerImportPreview_diagramCount(ctx, field)
+			case "nodeCount":
+				return ec.fieldContext_PlannerImportPreview_nodeCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PlannerImportPreview", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_validatePlannerImport_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -32123,13 +33244,20 @@ func (ec *executionContext) unmarshalInputPlannerConnectionInput(ctx context.Con
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"id", "source", "target", "sourcePort", "targetPort", "itemId", "availableLines"}
+	fieldsInOrder := [...]string{"generated", "id", "source", "target", "sourcePort", "targetPort", "itemId", "availableLines"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
+		case "generated":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("generated"))
+			data, err := ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Generated = data
 		case "id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 			data, err := ec.unmarshalNID2string(ctx, v)
@@ -32274,13 +33402,41 @@ func (ec *executionContext) unmarshalInputPlannerNodeInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"id", "kind", "parentId", "name", "itemId", "recipeId", "machineId", "linkedDiagramId", "x", "y", "width", "height", "collapsed", "rate", "clock", "somersloops", "status", "generated", "fixedSupply", "settings", "builtFingerprint"}
+	if _, present := asMap["surplus"]; !present {
+		asMap["surplus"] = false
+	}
+	if _, present := asMap["disabledOutputs"]; !present {
+		asMap["disabledOutputs"] = []any{}
+	}
+
+	fieldsInOrder := [...]string{"inputRateMode", "outputRateMode", "exposed", "id", "kind", "parentId", "name", "itemId", "recipeId", "machineId", "linkedDiagramId", "x", "y", "width", "height", "collapsed", "rate", "clock", "somersloops", "status", "generated", "fixedSupply", "surplus", "disabledOutputs", "settings", "builtFingerprint"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
+		case "inputRateMode":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("inputRateMode"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.InputRateMode = data
+		case "outputRateMode":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputRateMode"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputRateMode = data
+		case "exposed":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("exposed"))
+			data, err := ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Exposed = data
 		case "id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 			data, err := ec.unmarshalNID2string(ctx, v)
@@ -32414,6 +33570,20 @@ func (ec *executionContext) unmarshalInputPlannerNodeInput(ctx context.Context, 
 				return it, err
 			}
 			it.FixedSupply = data
+		case "surplus":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("surplus"))
+			data, err := ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Surplus = data
+		case "disabledOutputs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("disabledOutputs"))
+			data, err := ec.unmarshalNID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DisabledOutputs = data
 		case "settings":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("settings"))
 			data, err := ec.unmarshalNPlannerSettingsInput2apiᚋinternalᚋplannerᚐSettings(ctx, v)
@@ -32444,7 +33614,11 @@ func (ec *executionContext) unmarshalInputPlannerRecipeChoiceInput(ctx context.C
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"itemId", "recipeId"}
+	if _, present := asMap["surplusRecipeId"]; !present {
+		asMap["surplusRecipeId"] = ""
+	}
+
+	fieldsInOrder := [...]string{"itemId", "recipeId", "surplusRecipeId"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -32465,6 +33639,13 @@ func (ec *executionContext) unmarshalInputPlannerRecipeChoiceInput(ctx context.C
 				return it, err
 			}
 			it.RecipeID = data
+		case "surplusRecipeId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("surplusRecipeId"))
+			data, err := ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SurplusRecipeID = data
 		}
 	}
 	return it, nil
@@ -34629,6 +35810,20 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "importPlannerDiagram":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_importPlannerDiagram(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "duplicatePlannerDiagram":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_duplicatePlannerDiagram(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "login":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_login(ctx, field)
@@ -34920,6 +36115,11 @@ func (ec *executionContext) _PlannerCalculation(ctx context.Context, sel ast.Sel
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("PlannerCalculation")
+		case "calculationKey":
+			out.Values[i] = ec._PlannerCalculation_calculationKey(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "resolved":
 			out.Values[i] = ec._PlannerCalculation_resolved(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -35073,6 +36273,11 @@ func (ec *executionContext) _PlannerConnection(ctx context.Context, sel ast.Sele
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("PlannerConnection")
+		case "generated":
+			out.Values[i] = ec._PlannerConnection_generated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "id":
 			out.Values[i] = ec._PlannerConnection_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -35272,6 +36477,11 @@ func (ec *executionContext) _PlannerDiagram(ctx context.Context, sel ast.Selecti
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("PlannerDiagram")
+		case "calculationKey":
+			out.Values[i] = ec._PlannerDiagram_calculationKey(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "id":
 			out.Values[i] = ec._PlannerDiagram_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -35331,6 +36541,11 @@ func (ec *executionContext) _PlannerDiagramRevision(ctx context.Context, sel ast
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("PlannerDiagramRevision")
+		case "calculationKey":
+			out.Values[i] = ec._PlannerDiagramRevision_calculationKey(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "id":
 			out.Values[i] = ec._PlannerDiagramRevision_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -35482,6 +36697,55 @@ func (ec *executionContext) _PlannerFlow(ctx context.Context, sel ast.SelectionS
 	return out
 }
 
+var plannerImportPreviewImplementors = []string{"PlannerImportPreview"}
+
+func (ec *executionContext) _PlannerImportPreview(ctx context.Context, sel ast.SelectionSet, obj *model.PlannerImportPreview) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, plannerImportPreviewImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("PlannerImportPreview")
+		case "name":
+			out.Values[i] = ec._PlannerImportPreview_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "diagramCount":
+			out.Values[i] = ec._PlannerImportPreview_diagramCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "nodeCount":
+			out.Values[i] = ec._PlannerImportPreview_nodeCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var plannerItemImplementors = []string{"PlannerItem"}
 
 func (ec *executionContext) _PlannerItem(ctx context.Context, sel ast.SelectionSet, obj *planner.Item) graphql.Marshaler {
@@ -35557,6 +36821,11 @@ func (ec *executionContext) _PlannerMachine(ctx context.Context, sel ast.Selecti
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("PlannerMachine")
+		case "buildCost":
+			out.Values[i] = ec._PlannerMachine_buildCost(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "id":
 			out.Values[i] = ec._PlannerMachine_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -35641,6 +36910,21 @@ func (ec *executionContext) _PlannerNode(ctx context.Context, sel ast.SelectionS
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("PlannerNode")
+		case "inputRateMode":
+			out.Values[i] = ec._PlannerNode_inputRateMode(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "outputRateMode":
+			out.Values[i] = ec._PlannerNode_outputRateMode(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "exposed":
+			out.Values[i] = ec._PlannerNode_exposed(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "id":
 			out.Values[i] = ec._PlannerNode_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -35736,6 +37020,16 @@ func (ec *executionContext) _PlannerNode(ctx context.Context, sel ast.SelectionS
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "surplus":
+			out.Values[i] = ec._PlannerNode_surplus(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "disabledOutputs":
+			out.Values[i] = ec._PlannerNode_disabledOutputs(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "settings":
 			out.Values[i] = ec._PlannerNode_settings(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -35780,6 +37074,16 @@ func (ec *executionContext) _PlannerNodeResult(ctx context.Context, sel ast.Sele
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("PlannerNodeResult")
+		case "exportRate":
+			out.Values[i] = ec._PlannerNodeResult_exportRate(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "surplusRate":
+			out.Values[i] = ec._PlannerNodeResult_surplusRate(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "nodeId":
 			out.Values[i] = ec._PlannerNodeResult_nodeId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -35965,6 +37269,11 @@ func (ec *executionContext) _PlannerRecipeChoice(ctx context.Context, sel ast.Se
 			}
 		case "recipeId":
 			out.Values[i] = ec._PlannerRecipeChoice_recipeId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "surplusRecipeId":
+			out.Values[i] = ec._PlannerRecipeChoice_surplusRecipeId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -36574,6 +37883,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
+		case "previewPlannerDiagram":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_previewPlannerDiagram(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "plannerWorkspace":
 			field := field
 
@@ -36584,6 +37915,50 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_plannerWorkspace(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "exportPlannerDiagram":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_exportPlannerDiagram(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "validatePlannerImport":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_validatePlannerImport(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -40541,6 +41916,36 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
+func (ec *executionContext) unmarshalNID2ᚕstringᚄ(ctx context.Context, v any) ([]string, error) {
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNID2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNID2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNID2string(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
 func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v any) (int, error) {
 	res, err := graphql.UnmarshalInt(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -41033,6 +42438,20 @@ func (ec *executionContext) marshalNPlannerFlow2ᚕapiᚋinternalᚋplannerᚐFl
 	}
 
 	return ret
+}
+
+func (ec *executionContext) marshalNPlannerImportPreview2apiᚋinternalᚋgraphᚋmodelᚐPlannerImportPreview(ctx context.Context, sel ast.SelectionSet, v model.PlannerImportPreview) graphql.Marshaler {
+	return ec._PlannerImportPreview(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNPlannerImportPreview2ᚖapiᚋinternalᚋgraphᚋmodelᚐPlannerImportPreview(ctx context.Context, sel ast.SelectionSet, v *model.PlannerImportPreview) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._PlannerImportPreview(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNPlannerItem2apiᚋinternalᚋplannerᚐItem(ctx context.Context, sel ast.SelectionSet, v planner.Item) graphql.Marshaler {

@@ -8,6 +8,7 @@ dashboard uses.
 | `extract_images_wiki_gg.py` | crawls the wiki, writes `image_source.json` |
 | `download_images.py` | downloads every URL in the manifest into `downloads/` |
 | `scale_images.py` | renders each image at every resolution into `output/<size>/` |
+| `extract_item_colors.py` | derives planner item accents from the installed 64x64 icons |
 | `justfile` | the recipes below |
 
 ## Flow
@@ -27,10 +28,14 @@ just scrape-images dry-run     # crawl without writing the manifest
 just scrape-images download    # fetch everything in the manifest
 just scrape-images scale       # re-render sizes from downloads/ (no re-download)
 just scrape-images prod        # scale, then copy into dashboard/public
+just scrape-images colors      # regenerate planner item accents from installed icons
 just scrape-images clean       # drop venv/ and downloads/
 ```
 
 Full refresh: `scrape` → `download` → `prod`.
+
+`prod` also writes `dashboard/src/sections/calculator/item-colors.json`. Item accents are
+precomputed so diagram interactions do not need to read image pixels.
 
 ## Notes
 

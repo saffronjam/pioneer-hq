@@ -23,16 +23,17 @@ type Item struct {
 
 // Machine contains the equipment coefficients used by the planner.
 type Machine struct {
-	ID                 string  `json:"id"`
-	Name               string  `json:"name"`
-	Power              float64 `json:"power"`
-	PowerExponent      float64 `json:"powerExponent"`
-	BoostPowerExponent float64 `json:"boostPowerExponent"`
-	BoostSlots         int     `json:"boostSlots"`
-	BoostPerSlot       float64 `json:"boostPerSlot"`
-	VariablePower      bool    `json:"variablePower"`
-	MinClock           float64 `json:"minClock"`
-	MaxClock           float64 `json:"maxClock"`
+	BuildCost          []Amount `json:"buildCost"`
+	ID                 string   `json:"id"`
+	Name               string   `json:"name"`
+	Power              float64  `json:"power"`
+	PowerExponent      float64  `json:"powerExponent"`
+	BoostPowerExponent float64  `json:"boostPowerExponent"`
+	BoostSlots         int      `json:"boostSlots"`
+	BoostPerSlot       float64  `json:"boostPerSlot"`
+	VariablePower      bool     `json:"variablePower"`
+	MinClock           float64  `json:"minClock"`
+	MaxClock           float64  `json:"maxClock"`
 }
 
 // Recipe describes one automated transformation.
@@ -72,8 +73,9 @@ type Catalog struct {
 
 // RecipeChoice chooses a product's recipe in a scope.
 type RecipeChoice struct {
-	ItemID   string `json:"itemId"`
-	RecipeID string `json:"recipeId"`
+	ItemID          string `json:"itemId"`
+	RecipeID        string `json:"recipeId"`
+	SurplusRecipeID string `json:"surplusRecipeId"`
 }
 
 // Settings contains explicit overrides; zero transport tiers inherit.
@@ -98,10 +100,15 @@ type Node struct {
 	Width            float64  `json:"width"`
 	Height           float64  `json:"height"`
 	Collapsed        bool     `json:"collapsed"`
+	InputRateMode    string   `json:"inputRateMode"`
+	OutputRateMode   string   `json:"outputRateMode"`
+	Exposed          bool     `json:"exposed"`
 	Rate             float64  `json:"rate"`
 	Clock            float64  `json:"clock"`
 	Somersloops      int      `json:"somersloops"`
 	Status           string   `json:"status"`
+	Surplus          bool     `json:"surplus"`
+	DisabledOutputs  []string `json:"disabledOutputs,omitempty"`
 	Generated        bool     `json:"generated"`
 	FixedSupply      bool     `json:"fixedSupply"`
 	Settings         Settings `json:"settings"`
@@ -110,6 +117,7 @@ type Node struct {
 
 // Connection carries aggregate material between two ports.
 type Connection struct {
+	Generated      bool   `json:"generated"`
 	ID             string `json:"id"`
 	Source         string `json:"source"`
 	Target         string `json:"target"`
@@ -140,11 +148,12 @@ type Document struct {
 
 // Diagram wraps a document with its ownership and optimistic revision.
 type Diagram struct {
-	ID        string    `json:"id"`
-	SessionID string    `json:"sessionId"`
-	Revision  int       `json:"revision"`
-	UpdatedAt time.Time `json:"updatedAt"`
-	Document  Document  `json:"document"`
+	CalculationKey string    `json:"calculationKey"`
+	ID             string    `json:"id"`
+	SessionID      string    `json:"sessionId"`
+	Revision       int       `json:"revision"`
+	UpdatedAt      time.Time `json:"updatedAt"`
+	Document       Document  `json:"document"`
 }
 
 // Flow is a material rate at a port.
@@ -167,6 +176,8 @@ type Diagnostic struct {
 // NodeResult describes planned activity and installed capacity.
 type NodeResult struct {
 	NodeID             string  `json:"nodeId"`
+	ExportRate         float64 `json:"exportRate"`
+	SurplusRate        float64 `json:"surplusRate"`
 	Machines           int     `json:"machines"`
 	EquivalentMachines float64 `json:"equivalentMachines"`
 	Utilization        float64 `json:"utilization"`
@@ -192,6 +203,7 @@ type ConnectionResult struct {
 
 // Calculation is a result for a consistent set of session diagrams.
 type Calculation struct {
+	CalculationKey    string             `json:"calculationKey"`
 	Resolved          bool               `json:"resolved"`
 	DiagramID         string             `json:"diagramId"`
 	Revision          int                `json:"revision"`

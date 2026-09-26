@@ -122,6 +122,7 @@ func TestSharedFactoryCapacity(t *testing.T) {
 	c := BundledCatalog()
 	child := testDocument()
 	child.Nodes = []Node{testNode("export", "output", "Desc_IronRod_C", 60)}
+	child.Nodes[0].Exposed = true
 	child, err := Expand(child, c)
 	if err != nil {
 		t.Fatal(err)
@@ -245,7 +246,7 @@ func TestLateGameRecipesAndAmbiguousBoundary(t *testing.T) {
 	for _, r := range c.Recipes {
 		if r.Name == "Dark Matter Crystal" || r.Name == "Dark Matter Residue" || r.Name == "Ficsite Ingot (Caterium)" {
 			d := testDocument()
-			d.Settings.Recipes = []RecipeChoice{{r.Products[0].ItemID, r.ID}}
+			d.Settings.Recipes = []RecipeChoice{{ItemID: r.Products[0].ItemID, RecipeID: r.ID}}
 			d.Nodes = []Node{testNode("out", "output", r.Products[0].ItemID, 10)}
 			d, err := Expand(d, c)
 			if err != nil {
@@ -263,7 +264,7 @@ func TestEveryCatalogRecipeExpandsAndBalances(t *testing.T) {
 	for _, recipe := range c.Recipes {
 		t.Run(recipe.ID, func(t *testing.T) {
 			d := testDocument()
-			d.Settings.Recipes = []RecipeChoice{{recipe.Products[0].ItemID, recipe.ID}}
+			d.Settings.Recipes = []RecipeChoice{{ItemID: recipe.Products[0].ItemID, RecipeID: recipe.ID}}
 			d.Nodes = []Node{testNode("out", "output", recipe.Products[0].ItemID, 1)}
 			d, err := Expand(d, c)
 			if err != nil {

@@ -37,7 +37,7 @@ export default defineConfig({
     host: true,
     fs: { cachedChecks: false },
     watch: {
-      ignored: ["**/dist/**", "**/public/assets/images/satisfactory/**"],
+      ignored: ["**/dist/**", "**/public/assets/images/satisfactory/map/**"],
     },
     proxy: {
       "/graphql": { target: "http://localhost:8081", changeOrigin: true, ws: true },

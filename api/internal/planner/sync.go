@@ -154,8 +154,9 @@ type Change struct {
 
 // DiagramRevision identifies one authored document revision.
 type DiagramRevision struct {
-	ID       string `json:"id"`
-	Revision int    `json:"revision"`
+	CalculationKey string `json:"calculationKey"`
+	ID             string `json:"id"`
+	Revision       int    `json:"revision"`
 }
 
 // Revision reads the latest workspace notification without running the solver.
@@ -166,7 +167,7 @@ func (s *Service) Revision(ctx context.Context, sid string) (*Change, error) {
 	}
 	c := &Change{Revision: w.Revision, CatalogVersion: w.Catalog.Version, Diagrams: []DiagramRevision{}}
 	for _, d := range w.Diagrams {
-		c.Diagrams = append(c.Diagrams, DiagramRevision{ID: d.ID, Revision: d.Revision})
+		c.Diagrams = append(c.Diagrams, DiagramRevision{ID: d.ID, Revision: d.Revision, CalculationKey: d.CalculationKey})
 	}
 	return c, nil
 }

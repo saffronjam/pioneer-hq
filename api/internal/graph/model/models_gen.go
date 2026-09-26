@@ -347,6 +347,12 @@ type PipeJunction struct {
 	Rotation float64 `json:"rotation"`
 }
 
+type PlannerImportPreview struct {
+	Name         string `json:"name"`
+	DiagramCount int    `json:"diagramCount"`
+	NodeCount    int    `json:"nodeCount"`
+}
+
 type Player struct {
 	ID       string       `json:"id"`
 	Name     string       `json:"name"`

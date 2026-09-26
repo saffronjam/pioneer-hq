@@ -1,6 +1,6 @@
 import { Children, isValidElement, useState, type ReactNode } from 'react';
 import { Command } from 'cmdk';
-import { Check, Package, Search } from 'lucide-react';
+import { Check, ChevronDown, Package, Search } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 import type { PlannerCatalog } from '@/services/plannerApi';
 
 /** App-styled selection for the planner's finite choices. */
@@ -17,54 +18,85 @@ export function ChoiceSelect({
   onChange,
   children,
   className,
+  renderOption,
   ...props
 }: {
   value: string | number;
   onChange: (event: { target: { value: string } }) => void;
   children: ReactNode;
   className?: string;
+  renderOption?: (value: string) => ReactNode;
   disabled?: boolean;
   'aria-label'?: string;
 }) {
+  const [open, setOpen] = useState(false);
+  const [activated, setActivated] = useState(false);
   const options = Children.toArray(children).filter(
     isValidElement<{ value: string | number; children: ReactNode; disabled?: boolean }>
   );
   const placeholder = options.find((o) => o.props.value === '')?.props.children;
+  const selected = options.find((o) => String(o.props.value) === String(value));
   return (
     <Select
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next);
+        if (next) setActivated(true);
+      }}
       value={value === '' ? '__empty' : String(value)}
-      onValueChange={(v) => onChange({ target: { value: v === '__empty' ? '' : v } })}
+      onValueChange={(v) => {
+        const next = v === '__empty' ? '' : v;
+        if (
+          options.some(
+            (o) =>
+              !o.props.disabled && (o.props.value === '' ? '__empty' : String(o.props.value)) === v
+          )
+        )
+          onChange({ target: { value: next } });
+      }}
       disabled={props.disabled}
     >
-      <SelectTrigger className={className ?? 'w-full'} aria-label={props['aria-label']}>
-        <SelectValue placeholder={placeholder ?? 'Choose…'} />
+      <SelectTrigger
+        className={cn('w-full text-foreground enabled:hover:bg-accent', className)}
+        aria-label={props['aria-label']}
+        onFocus={() => setActivated(true)}
+      >
+        <SelectValue className="min-w-0 flex-1" placeholder={placeholder ?? 'Choose…'}>
+          {selected &&
+            (renderOption ? renderOption(String(selected.props.value)) : selected.props.children)}
+        </SelectValue>
       </SelectTrigger>
-      <SelectContent>
-        {options.map((o) => (
-          <SelectItem
-            key={String(o.props.value)}
-            value={o.props.value === '' ? '__empty' : String(o.props.value)}
-            disabled={o.props.disabled}
-          >
-            {o.props.children}
-          </SelectItem>
-        ))}
-      </SelectContent>
+      {activated && (
+        <SelectContent>
+          {options.map((o) => (
+            <SelectItem
+              key={String(o.props.value)}
+              value={o.props.value === '' ? '__empty' : String(o.props.value)}
+              disabled={o.props.disabled}
+              className={
+                renderOption ? '[&>span:last-child]:min-w-0 [&>span:last-child]:flex-1' : undefined
+              }
+            >
+              {renderOption ? renderOption(String(o.props.value)) : o.props.children}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      )}
     </Select>
   );
 }
 
 /** Item artwork from the same game assets used by the rest of the app. */
-export function MaterialIcon({ name }: { name: string }) {
-  const [failed, setFailed] = useState(false);
-  return failed ? (
-    <Package className="size-8 shrink-0 text-muted-foreground" />
+export function MaterialIcon({ name, className }: { name: string; className?: string }) {
+  const [failedName, setFailedName] = useState<string | null>(null);
+  return failedName === name ? (
+    <Package className={cn('size-8 shrink-0 text-muted-foreground', className)} />
   ) : (
     <img
-      className="size-8 shrink-0 object-contain"
+      className={cn('size-8 shrink-0 object-contain', className)}
       src={`/assets/images/satisfactory/64x64/${encodeURIComponent(name)}.png`}
       alt=""
-      onError={() => setFailed(true)}
+      onError={() => setFailedName(name)}
     />
   );
 }
@@ -104,10 +136,7 @@ export function MaterialPicker({
           className="h-10 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
         />
       </div>
-      <Command.List
-        className="max-h-[min(300px,40dvh)] min-h-24 overflow-y-auto p-1"
-        aria-label="Materials"
-      >
+      <Command.List className="h-[min(300px,40dvh)] overflow-y-auto p-1" aria-label="Materials">
         <Command.Empty className="py-6 text-center text-sm text-muted-foreground">
           No materials found
         </Command.Empty>
@@ -133,28 +162,35 @@ export function MaterialPicker({
   );
 }
 
-/** A material picker presented as a compact field in the inspector. */
+/** A material picker presented as a compact dropdown field. */
 export function MaterialSelect({
   items,
   value,
   onChange,
-  placeholder = 'Choose material…',
+  placeholder = 'Search material…',
+  defaultOpen = false,
 }: {
   items: PlannerCatalog['items'];
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  defaultOpen?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
+  const selected = items.find((i) => i.id === value);
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
-        className="flex min-h-9 w-full items-center rounded-md border border-input bg-transparent px-3 py-2 text-left text-sm"
+        className="flex min-h-9 w-full items-center gap-2 rounded-md border border-input bg-transparent px-3 py-2 text-left text-sm"
         aria-label={placeholder}
       >
-        {items.find((i) => i.id === value)?.name ?? (
-          <span className="text-muted-foreground">{placeholder}</span>
+        {selected && (
+          <MaterialIcon key={selected.id} name={selected.name} className="size-5 shrink-0" />
         )}
+        <span className={cn('min-w-0 flex-1 truncate', !selected && 'text-muted-foreground')}>
+          {selected?.name ?? placeholder}
+        </span>
+        <ChevronDown className="size-4 shrink-0 opacity-50" aria-hidden="true" />
       </PopoverTrigger>
       <PopoverContent className="w-80 max-w-[calc(100vw-2rem)] p-0" align="start">
         <MaterialPicker

@@ -5,6 +5,7 @@ import (
 	"api/models/models"
 	"api/pkg/eventbus"
 	"context"
+	"log/slog"
 	"time"
 )
 
@@ -48,7 +49,8 @@ func (sm *SessionManager) syncPlanner(ctx context.Context, sess *models.Session,
 		catalog, err := client.GetPlannerCatalog(fetchCtx)
 		if err != nil {
 			sm.withPlannerSession(ctx, sess.ID, state, func() {
-				sm.planner.SyncFailure(ctx, sess.ID, "Recipe sync unavailable. Using cached recipes. "+err.Error())
+				slog.Warn("Planner recipe sync failed", "session", sess.ID, "error", err)
+				sm.planner.SyncFailure(ctx, sess.ID, "Recipe sync unavailable. Using cached recipes.")
 			})
 			return
 		}
@@ -58,7 +60,8 @@ func (sm *SessionManager) syncPlanner(ctx context.Context, sess *models.Session,
 		}
 		sm.withPlannerSession(ctx, sess.ID, state, func() {
 			if err := sm.planner.Sync(ctx, sess.ID, catalog); err != nil {
-				sm.planner.SyncFailure(ctx, sess.ID, "Recipe sync unavailable. Using cached recipes. "+err.Error())
+				slog.Warn("Planner recipe sync failed", "session", sess.ID, "error", err)
+				sm.planner.SyncFailure(ctx, sess.ID, "Recipe sync unavailable. Using cached recipes.")
 			}
 		})
 	}

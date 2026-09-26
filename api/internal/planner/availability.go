@@ -7,6 +7,13 @@ import (
 
 // calculateAvailable isolates unavailable material networks without discarding authored nodes.
 func calculateAvailable(ctx context.Context, c Catalog, ds []Diagram, revision string) ([]Calculation, error) {
+	ds = slices.Clone(ds)
+	for i := range ds {
+		nodes := nodeMap(ds[i].Document)
+		ds[i].Document.Connections = slices.DeleteFunc(slices.Clone(ds[i].Document.Connections), func(e Connection) bool {
+			return outputDisabled(nodes[e.Source], e.ItemID)
+		})
+	}
 	x, err := NewIndex(c)
 	if err != nil {
 		return nil, err

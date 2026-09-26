@@ -13,6 +13,30 @@
 .planner .react-flow__node {
   font-family: inherit;
 }
+.planner [data-search-match] {
+  outline: 3px solid var(--color-sky-400);
+  outline-offset: 3px;
+}
 .planner .react-flow__edge.selected path {
   stroke: var(--primary);
+}
+
+.planner .react-flow__edgelabel-renderer {
+  z-index: 1;
+}
+.planner .react-flow__edge.animated .react-flow__edge-path,
+.planner .planner-boundary-flow {
+  stroke-dasharray: 6 5;
+  animation: planner-flow 0.7s linear infinite;
+}
+@keyframes planner-flow {
+  to {
+    stroke-dashoffset: -22;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .planner .react-flow__edge.animated .react-flow__edge-path,
+  .planner .planner-boundary-flow {
+    animation: none;
+  }
 }

@@ -38,6 +38,10 @@ download: venv
 scale: venv
     {{ python }} scale_images.py
 
+[doc('Extract planner item colors from the installed icons')]
+colors: venv
+    {{ python }} extract_item_colors.py
+
 [doc('Scale the images and copy them into dashboard/public')]
 prod: scale
     #!/usr/bin/env bash
@@ -47,6 +51,7 @@ prod: scale
         rm -rf "{{ dashboard_icons }}/$res"
         cp -r "output/$res" "{{ dashboard_icons }}/"
     done
+    {{ python }} extract_item_colors.py
 
 [confirm('Remove the virtualenv and downloads? [y/N]')]
 [doc('Remove the virtualenv and downloads')]

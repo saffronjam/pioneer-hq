@@ -36,11 +36,10 @@ func (client *Client) GetPlannerCatalog(ctx context.Context) (planner.Catalog, e
 	}
 	c := planner.BundledCatalog()
 	index, _ := planner.NewIndex(c)
-	unlocked, alternate := map[string]bool{}, map[string]bool{}
+	unlocked := map[string]bool{}
 	for _, s := range schematics {
 		for _, r := range s.Recipes {
 			unlocked[r.ClassName] = unlocked[r.ClassName] || s.Purchased
-			alternate[r.ClassName] = alternate[r.ClassName] || s.Type == "Alternate"
 		}
 	}
 	c.Recipes = []planner.Recipe{}
@@ -72,7 +71,6 @@ func (client *Client) GetPlannerCatalog(ctx context.Context) (planner.Catalog, e
 		r.Name = raw.Name
 		r.Duration = raw.FactoryDuration
 		r.MachineIDs = machines
-		r.Alternate = alternate[raw.ClassName]
 		r.Ingredients = []planner.Amount{}
 		r.Products = []planner.Amount{}
 		for _, pair := range []struct {

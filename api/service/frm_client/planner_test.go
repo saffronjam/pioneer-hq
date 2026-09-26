@@ -16,7 +16,7 @@ func TestPlannerCatalogRefresh(t *testing.T) {
 	c := planner.BundledCatalog()
 	index, _ := planner.NewIndex(c)
 	r := index.Recipes["Recipe_IronPlate_C"]
-	for _, scenario := range []string{"valid", "invalid-rate", "unknown-machine", "empty"} {
+	for _, scenario := range []string{"valid", "alternate-unlock", "invalid-rate", "unknown-machine", "empty", "object"} {
 		t.Run(scenario, func(t *testing.T) {
 			raw := frm_models.PlannerRecipe{ClassName: r.ID, Name: r.Name, FactoryDuration: r.Duration, ProducedIn: r.MachineIDs}
 			for _, a := range r.Ingredients {
@@ -35,20 +35,26 @@ func TestPlannerCatalogRefresh(t *testing.T) {
 				w.Header().Set("Content-Type", "application/json")
 				switch req.URL.Path {
 				case "/getRecipes":
-					if scenario == "empty" {
+					if scenario == "object" {
+						json.NewEncoder(w).Encode(map[string]string{})
+					} else if scenario == "empty" {
 						json.NewEncoder(w).Encode([]frm_models.PlannerRecipe{})
 					} else {
 						json.NewEncoder(w).Encode([]frm_models.PlannerRecipe{raw})
 					}
 				case "/getSchematics":
-					json.NewEncoder(w).Encode([]frm_models.PlannerSchematic{{Purchased: true, Recipes: []frm_models.PlannerRecipe{{ClassName: r.ID}}}})
+					kind := "Milestone"
+					if scenario == "alternate-unlock" {
+						kind = "Alternate"
+					}
+					json.NewEncoder(w).Encode([]frm_models.PlannerSchematic{{Type: kind, Purchased: true, Recipes: []frm_models.PlannerRecipe{{ClassName: r.ID}}}})
 				default:
 					http.NotFound(w, req)
 				}
 			}))
 			defer server.Close()
 			result, err := frm_client.FetchPlannerCatalog(context.Background(), server.URL)
-			if scenario != "valid" {
+			if scenario != "valid" && scenario != "alternate-unlock" {
 				if err == nil {
 					t.Fatal("invalid snapshot accepted")
 				}
@@ -59,6 +65,9 @@ func TestPlannerCatalogRefresh(t *testing.T) {
 			}
 			if len(result.Recipes) != 1 || len(result.Unlocks) != 1 || !result.Unlocks[0].Unlocked || result.Version == c.Version {
 				t.Fatal(result.Version, result.Unlocks)
+			}
+			if result.Recipes[0].Alternate {
+				t.Fatal("alternate schematic reclassified a standard recipe")
 			}
 		})
 	}

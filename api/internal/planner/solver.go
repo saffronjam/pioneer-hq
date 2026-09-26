@@ -15,9 +15,21 @@ type equation struct {
 	coefficients map[int]float64
 	rhs          float64
 }
+
+const (
+	targetObjective = iota
+	connectionObjective
+	supplyObjective
+	surplusProductionObjective
+	surplusUseObjective
+	externalInputObjective
+	activityObjective
+	objectiveCount
+)
+
 type program struct {
 	rows  []equation
-	costs [4][]float64
+	costs [objectiveCount][]float64
 }
 
 func (p *program) variable(stage int, cost float64) int {
@@ -35,7 +47,7 @@ func (p *program) eq(coeff map[int]float64, rhs float64) {
 	p.rows = append(p.rows, equation{coeff, rhs})
 }
 func (p *program) le(coeff map[int]float64, rhs float64) {
-	coeff[p.variable(3, 0)] = 1
+	coeff[p.variable(activityObjective, 0)] = 1
 	p.eq(coeff, rhs)
 }
 func cloneCoefficients(m map[int]float64) map[int]float64 {
@@ -75,6 +87,12 @@ func calculateComponent(ctx context.Context, catalog Catalog, ds []Diagram, revi
 		return nil, err
 	}
 	p := &program{}
+	hasSurplus := false
+	for _, d := range ds {
+		for _, n := range d.Document.Nodes {
+			hasSurplus = hasSurplus || n.Surplus
+		}
+	}
 	nodes := map[string]compiledNode{}
 	byDiagram := map[string]Diagram{}
 	results := make([]Calculation, len(ds))
@@ -91,13 +109,14 @@ func calculateComponent(ctx context.Context, catalog Catalog, ds []Diagram, revi
 			if n.Kind == "production" {
 				cn.recipe = x.Recipes[n.RecipeID]
 				cn.machine = x.Machines[n.MachineID]
-				cn.activity = p.variable(3, 1)
+				cn.activity = p.variable(activityObjective, 1)
 			}
 			nodes[d.ID+"/"+n.ID] = cn
 		}
 	}
 	incoming, outgoing := map[port]map[int]float64{}, map[port]map[int]float64{}
 	edgeVars := map[string]int{}
+	var surplusFeeds []surplusFeed
 	addDiagnostic := func(d Diagnostic) {
 		i := resultIndex[d.DiagramID]
 		results[i].Diagnostics = append(results[i].Diagnostics, d)
@@ -120,7 +139,7 @@ func calculateComponent(ctx context.Context, catalog Catalog, ds []Diagram, revi
 		}
 		var matches []string
 		for _, cn := range child.Document.Nodes {
-			if cn.Kind == kind && cn.ItemID == item && (portID == "" || cn.ID == portID) {
+			if cn.Kind == kind && (kind != "output" || cn.Exposed) && cn.ItemID == item && (portID == "" || cn.ID == portID) {
 				matches = append(matches, child.ID+"/"+cn.ID)
 			}
 		}
@@ -156,7 +175,7 @@ func calculateComponent(ctx context.Context, catalog Catalog, ds []Diagram, revi
 			} else if tn.node.ItemID != e.ItemID || !slices.Contains([]string{"input", "output"}, tn.node.Kind) {
 				return nil, fmt.Errorf("invalid target on connection %s", e.ID)
 			}
-			v := p.variable(3, 1e-6)
+			v := p.variable(activityObjective, 1e-6)
 			edgeVars[d.ID+"/"+e.ID] = v
 			sp, tp := port{s, e.ItemID}, port{t, e.ItemID}
 			if outgoing[sp] == nil {
@@ -164,6 +183,9 @@ func calculateComponent(ctx context.Context, catalog Catalog, ds []Diagram, revi
 			}
 			if incoming[tp] == nil {
 				incoming[tp] = map[int]float64{}
+			}
+			if tn.node.Surplus {
+				surplusFeeds = append(surplusFeeds, surplusFeed{s, t, e.ItemID, v})
 			}
 			outgoing[sp][v] = 1
 			incoming[tp][v] = 1
@@ -191,22 +213,25 @@ func calculateComponent(ctx context.Context, catalog Catalog, ds []Diagram, revi
 			for _, a := range cn.recipe.Ingredients {
 				row := cloneCoefficients(incoming[port{key, a.ItemID}])
 				row[cn.activity] = -a.Amount * 60 / cn.recipe.Duration * clock
-				addDeficit(row, 1, 1, cn, a.ItemID, "unconnected", "Production input is not fully connected")
+				addDeficit(row, 1, connectionObjective, cn, a.ItemID, "unconnected", "Production input is not fully connected")
 				p.eq(row, 0)
 			}
 			for _, a := range cn.recipe.Products {
+				if outputDisabled(n, a.ItemID) {
+					continue
+				}
 				row := cloneCoefficients(outgoing[port{key, a.ItemID}])
 				row[cn.activity] = -a.Amount * 60 / cn.recipe.Duration * clock * boost
-				v := p.variable(3, 0)
+				v := p.variable(activityObjective, 0)
 				row[v] = 1
 				p.eq(row, 0)
 				surpluses = append(surpluses, surplus{v, cn.diagram, n.ID, a.ItemID})
 			}
 		case "supply":
 			row := cloneCoefficients(outgoing[port{key, n.ItemID}])
-			addDeficit(row, -1, 2, cn, n.ItemID, "supply_shortage", "Supply is below the planned requirement")
+			addDeficit(row, -1, supplyObjective, cn, n.ItemID, "supply_shortage", "Supply is below the planned requirement")
 			if n.FixedSupply {
-				v := p.variable(3, 0)
+				v := p.variable(activityObjective, 0)
 				row[v] = 1
 				p.eq(row, n.Rate)
 				surpluses = append(surpluses, surplus{v, cn.diagram, n.ID, n.ItemID})
@@ -214,22 +239,51 @@ func calculateComponent(ctx context.Context, catalog Catalog, ds []Diagram, revi
 				p.le(row, n.Rate)
 			}
 		case "input":
-			row := cloneCoefficients(outgoing[port{key, n.ItemID}])
-			for v, c := range incoming[port{key, n.ItemID}] {
-				row[v] -= c
+			stage := supplyObjective
+			if hasSurplus {
+				stage = externalInputObjective
 			}
-			addDeficit(row, -1, 2, cn, n.ItemID, "input_shortage", "Provide this material from a source or parent factory")
-			p.eq(row, 0)
+			if len(incoming[port{key, n.ItemID}]) > 0 {
+				stage = connectionObjective
+			}
+			if n.InputRateMode == "fixed" {
+				row := cloneCoefficients(incoming[port{key, n.ItemID}])
+				addDeficit(row, 1, stage, cn, n.ItemID, "input_shortage", "Provide this material from a source or parent factory")
+				p.eq(row, n.Rate)
+				row = cloneCoefficients(outgoing[port{key, n.ItemID}])
+				addDeficit(row, -1, supplyObjective, cn, n.ItemID, "required_input_shortage", "Required input rate is below downstream demand")
+				v := p.variable(activityObjective, 0)
+				row[v] = 1
+				p.eq(row, n.Rate)
+				surpluses = append(surpluses, surplus{v, cn.diagram, n.ID, n.ItemID})
+			} else {
+				row := cloneCoefficients(outgoing[port{key, n.ItemID}])
+				for v, c := range incoming[port{key, n.ItemID}] {
+					row[v] -= c
+				}
+				addDeficit(row, -1, stage, cn, n.ItemID, "input_shortage", "Provide this material from a source or parent factory")
+				p.eq(row, 0)
+			}
+
 		case "output":
 			row := cloneCoefficients(incoming[port{key, n.ItemID}])
-			addDeficit(row, 1, 0, cn, n.ItemID, "output_shortage", "Output target is not fully connected")
-			p.eq(row, n.Rate)
-			row = cloneCoefficients(outgoing[port{key, n.ItemID}])
-			addDeficit(row, -1, 2, cn, n.ItemID, "overallocated", "Linked factory output is over-allocated")
-			p.le(row, n.Rate)
+			addDeficit(row, 1, targetObjective, cn, n.ItemID, "output_shortage", "Output target is not fully connected")
+			if n.OutputRateMode == "demand" {
+				for v, c := range outgoing[port{key, n.ItemID}] {
+					row[v] -= c
+				}
+				p.eq(row, 0)
+			} else {
+				p.eq(row, n.Rate)
+				if n.Exposed {
+					row = cloneCoefficients(outgoing[port{key, n.ItemID}])
+					addDeficit(row, -1, supplyObjective, cn, n.ItemID, "overallocated", "Export demand exceeds the fixed output")
+					p.le(row, n.Rate)
+				}
+			}
 		}
 	}
-	values, err := p.solve(ctx)
+	values, err := p.solveSurplus(ctx, nodes, surpluses, surplusFeeds, outgoing)
 	if err != nil {
 		return nil, err
 	}
@@ -244,6 +298,9 @@ func calculateComponent(ctx context.Context, catalog Catalog, ds []Diagram, revi
 		return v
 	}
 	for _, f := range deficits {
+		if f.code == "input_shortage" && len(incoming[port{f.diagram + "/" + f.node, f.item}]) == 0 {
+			continue
+		}
 		if v := value(f.variable); v > 1e-5 {
 			addDiagnostic(Diagnostic{DiagramID: f.diagram, NodeID: f.node, ItemID: f.item, Rate: v, Code: f.code, Message: f.message})
 		}
@@ -271,6 +328,9 @@ func calculateComponent(ctx context.Context, catalog Catalog, ds []Diagram, revi
 					r.Inputs = append(r.Inputs, Flow{a.ItemID, a.Amount * 60 / cn.recipe.Duration * clock * r.EquivalentMachines})
 				}
 				for _, a := range cn.recipe.Products {
+					if outputDisabled(n, a.ItemID) {
+						continue
+					}
 					r.Outputs = append(r.Outputs, Flow{a.ItemID, a.Amount * 60 / cn.recipe.Duration * clock * boost * r.EquivalentMachines})
 				}
 				lo, hi := cn.machine.Power, cn.machine.Power
@@ -294,7 +354,17 @@ func calculateComponent(ctx context.Context, catalog Catalog, ds []Diagram, revi
 					}
 				}
 				if n.Kind == "output" {
-					r.Outputs = []Flow{{n.ItemID, n.Rate}}
+					produced := 0.0
+					for v := range incoming[port{d.ID + "/" + n.ID, n.ItemID}] {
+						produced += value(v)
+					}
+					for v := range outgoing[port{d.ID + "/" + n.ID, n.ItemID}] {
+						r.ExportRate += value(v)
+					}
+					r.Outputs = []Flow{{n.ItemID, produced}}
+					if n.Exposed {
+						r.SurplusRate = math.Max(0, produced-r.ExportRate)
+					}
 				}
 			}
 			if n.Kind == "input" {
@@ -380,6 +450,9 @@ func calculateComponent(ctx context.Context, catalog Catalog, ds []Diagram, revi
 						for _, f := range result.Nodes[index[child.ID]].Outputs {
 							required += f.Rate
 						}
+						if child.InputRateMode == "fixed" {
+							required = child.Rate
+						}
 						for _, e := range d.Document.Connections {
 							if e.Target == child.ID && inside[e.Source] {
 								required -= edgeValue(d.ID, e.ID, value)
@@ -387,8 +460,11 @@ func calculateComponent(ctx context.Context, catalog Catalog, ds []Diagram, revi
 						}
 						r.Inputs = appendFlow(r.Inputs, child.ItemID, math.Max(0, required))
 					}
-					if child.Kind == "output" {
-						available := child.Rate
+					if child.Kind == "output" && child.Exposed {
+						available := 0.0
+						for _, f := range result.Nodes[index[child.ID]].Outputs {
+							available += f.Rate
+						}
 						for _, e := range d.Document.Connections {
 							if e.Source == child.ID && inside[e.Target] {
 								available -= edgeValue(d.ID, e.ID, value)
@@ -419,7 +495,7 @@ func calculateComponent(ctx context.Context, catalog Catalog, ds []Diagram, revi
 				sum := sha256.Sum256(b)
 				r.Fingerprint = hex.EncodeToString(sum[:])
 			}
-			if n.Status == "built" && n.BuiltFingerprint != "" && n.BuiltFingerprint != r.Fingerprint {
+			if Buildable(n) && n.Status == "built" && n.BuiltFingerprint != "" && n.BuiltFingerprint != r.Fingerprint {
 				addDiagnostic(Diagnostic{DiagramID: d.ID, NodeID: id, Code: "built_changed", Message: "Plan changed since marked built"})
 			}
 			return r.Fingerprint

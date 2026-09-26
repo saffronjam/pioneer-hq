@@ -44,6 +44,11 @@ func NewIndex(c Catalog) (*Index, error) {
 			return nil, fmt.Errorf("invalid machine %q", m.ID)
 		}
 		x.Machines[m.ID] = m
+		for _, cost := range m.BuildCost {
+			if x.Items[cost.ItemID].ID == "" || !positive(cost.Amount) {
+				return nil, fmt.Errorf("machine %s: invalid construction material %s", m.ID, cost.ItemID)
+			}
+		}
 	}
 	for _, r := range c.Recipes {
 		if r.ID == "" || x.Recipes[r.ID].ID != "" || !positive(r.Duration) || len(r.Products) == 0 || len(r.MachineIDs) == 0 || !finite(r.PowerConstant) || !finite(r.PowerFactor) || r.PowerConstant < 0 || r.PowerFactor < 0 {

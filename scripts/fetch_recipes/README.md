@@ -40,5 +40,5 @@ python3 scripts/fetch_recipes/build_catalog.py \
 ```
 
 The metadata builder validates quantities and durations against the snapshot, handles the game
-Docs' fluid-unit conversion, and adds material forms, power coefficients, Somersloop slots, and
-belt/pipe capacities. The catalog records the Docs source hash.
+Docs' fluid-unit conversion, and adds material forms, construction recipe costs, power coefficients, Somersloop slots, and
+belt/pipe capacities. Recipe alternate classification comes from the game Docs recipe name; a schematic can unlock supporting recipes as well as its alternate. The catalog records the Docs source hash.

@@ -1,7 +1,7 @@
 import { StrictMode, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
-import { BrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import App from './app';
 import { GraphQLClientProvider } from './gql/GraphQLClientProvider';
@@ -18,10 +18,11 @@ import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
-root.render(
-  <StrictMode>
-    <HelmetProvider>
-      <BrowserRouter>
+const router = createBrowserRouter(
+  [
+    {
+      path: '*',
+      element: (
         <ThemeProvider defaultTheme="dark" storageKey="pioneer-hq-theme">
           <TooltipProvider>
             <Suspense>
@@ -40,7 +41,16 @@ root.render(
             </Suspense>
           </TooltipProvider>
         </ThemeProvider>
-      </BrowserRouter>
+      ),
+    },
+  ],
+  { future: { v7_relativeSplatPath: true } }
+);
+
+root.render(
+  <StrictMode>
+    <HelmetProvider>
+      <RouterProvider router={router} future={{ v7_startTransition: true }} />
     </HelmetProvider>
   </StrictMode>
 );

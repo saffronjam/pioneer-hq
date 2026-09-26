@@ -46,7 +46,9 @@ func Calculate(ctx context.Context, catalog Catalog, diagrams []Diagram, revisio
 	}
 	results := make([]Calculation, 0, len(diagrams))
 	for _, d := range diagrams {
-		results = append(results, byID[d.ID])
+		r := byID[d.ID]
+		r.CalculationKey = d.CalculationKey
+		results = append(results, r)
 	}
 	return results, nil
 }
