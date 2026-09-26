@@ -37,8 +37,34 @@ just tygo       # api/models/models               -> dashboard/src/apiTypes.ts
 just generate   # all four
 ```
 
-Never start a service (`just dev`, `just web`, `just api`, `just up`) without being asked to. The
-user drives service startup and testing.
+Never start a service (`just dev`, `just web`, `just api`, `just up`) without being asked to.
+Agents own verification: run appropriate checks without starting services, and use an existing
+running instance when available. Report any verification that needs a service and remains untested.
+
+## Scope and completion
+
+- Define the intended user-visible behavior before choosing an implementation. For substantial
+  changes, identify ownership, defaults, explicit overrides, dependencies, and the ordinary edit
+  and deletion lifecycle. Existing code is evidence about the implementation, not the product spec.
+- Deliver the complete requested behavior. Internal implementation steps are fine; an unsolicited
+  "first version" with essential behavior deferred is not completion.
+- Include the ordinary interactions needed to make the requested feature usable. Do not invent
+  additional workflows, recovery systems, settings, or confirmation steps just because they could
+  be useful. Follow existing conventions and prefer the smallest complete solution.
+- Resolve routine choices independently from the request and app conventions. Surface assumptions
+  early when they materially change behavior; ask only when the available context cannot resolve
+  the choice. Do not make the user specify every predictable interaction.
+- Treat feedback as evidence of a broader rule: inspect related variants and shared components
+  within the affected scope. Distinguish correctness problems from newly expressed preferences;
+  do not turn every local preference into a universal rule.
+- Verify realistic user journeys, not only isolated functions. Select relevant cases such as
+  create, edit, remove, reopen, shared dependencies, nested ownership, empty states, and failures.
+  Scale verification to the change; do not add ritual tests for trivial edits.
+- For UI changes, inspect the rendered result and exercise the affected interactions when tooling
+  permits. Include representative content and states, not just an empty or ideal example.
+- Passing compilation or unit tests alone does not establish feature completeness. Before saying
+  "done", check the whole current request, including follow-up corrections, and report what was
+  verified and any remaining gaps. Distinguish mocked checks from live integration checks.
 
 ## API surface
 
@@ -88,7 +114,9 @@ There is no default password. A fresh instance is unclaimed and prints a single-
 setting an access key is optional. Access tokens are stored as SHA-256 digests, never in plaintext.
 See `api/service/auth/AGENTS.md`.
 
-## Adding a feature
+## Changing the API
+
+When the requested behavior requires an API change:
 
 1. Add the type/field/operation to `api/schema.graphql`.
 2. `just gqlgen`, then add a resolver in `internal/graph/resolvers_*.go` and a mapper in
@@ -102,13 +130,17 @@ AGENTS.md files under `api/internal/graph`, `api/internal/store`, `api/pkg/event
 
 ## Conventions
 
+- Never use browser-native `alert`, `confirm`, or `prompt` dialogs, including `beforeunload`
+  confirmation prompts. When a dialog is needed, use the app's shadcn dialogs with explicit actions
+  and a Cancel button. This does not require adding confirmation to ordinary actions.
 - **No backward compatibility.** Remove old code paths entirely rather than keeping dual behaviour.
   Clean breaks over gradual migrations.
 - **No inline comments** explaining flow. Code should read on its own. Comment exported symbols (Go
   doc comments, JSDoc) and genuinely non-obvious edge cases only.
 - **No migration or change-journey commentary** in code or docs — no "previously", "now uses",
   "replaces X". Git history and release notes are where change belongs.
-- **The backend is the source of truth.** The frontend renders what subscriptions deliver.
+- **The backend owns authoritative domain state.** The frontend owns temporary interaction state;
+  server updates must be reconciled without discarding newer user edits.
 - **The schema is the contract.** Regenerate after editing `api/schema.graphql`.
 
 ## Versioning and releases

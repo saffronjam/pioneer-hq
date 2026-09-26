@@ -65,6 +65,24 @@ just migrate-version
 - The `models` package must not import `internal/graph` — mapping is one-directional, domain →
   GraphQL model, and lives in `internal/graph/mappers_*.go`.
 
+## Domain behavior
+
+- Give each rule one authoritative owner. For hierarchical or shared data, define what each scope
+  resolves locally and what it delegates; do not assume every ancestor repeats a child's behavior.
+- Distinguish explicit user choices from inherited defaults and calculated values. Resolve defaults
+  deterministically from domain meaning, not incidental array or database ordering.
+- Treat create, update, delete, and reload as one lifecycle. Recompute affected dependents when
+  their inputs change, preserve stable identity where appropriate, and remove obsolete derived
+  data without deleting still-shared dependencies. Presentation annotations must not silently
+  change dependency ownership or retention.
+- Separate changes that affect domain calculations from changes that only affect presentation.
+  Keep derived status consistent with its actual dependencies rather than storing competing truth.
+- Diagnostics should identify violated constraints or unmet obligations. An expected boundary
+  condition or an explicitly chosen external dependency is not inherently a failure.
+- Test behavior at the boundaries relevant to the change: defaults and overrides, shared or nested
+  ownership, repeated operations, edits followed by deletion, persistence, and failure paths.
+  Prefer observable outcomes over tests that merely reproduce the implementation.
+
 ## Serving
 
 `cmd/server.go` builds a plain `http.ServeMux`:

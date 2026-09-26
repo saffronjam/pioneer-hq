@@ -77,8 +77,8 @@ const api = useContextSelector(ApiContext, (v) => ({
 `createSession`. All live data is scoped to the selected session.
 
 **Styling.** Tailwind utilities plus `cn()` for conditional merging. Theme colours come from the CSS
-variables in `src/index.css` (OKLCH), so use `hsl(var(--muted-foreground))` and friends in Recharts
-props rather than literal colours.
+variables in `src/index.css` (complete OKLCH values), so use `var(--muted-foreground)` and friends
+in Recharts props rather than literal colours.
 
 **Pages.** A page sets its `<Helmet>` title and renders a section view; keep the feature UI in
 `sections/<domain>/`.
@@ -124,9 +124,44 @@ renders at (0,0) off-screen. Style the trigger directly instead:
 </DropdownMenuTrigger>
 ```
 
+## Interaction and presentation
+
+- Reuse the app's shadcn controls and shared patterns. Inspect comparable UI before introducing a
+  new control or interaction, and apply changes consistently across affected variants.
+- Make available actions discoverable. Selectors should look selectable, large option sets should
+  be searchable, and context menus should include the actions applicable to their location.
+  Preserve accessible names, keyboard operation, focus behavior, and selected states.
+- Show controls for meaningful user choices, not every field in the data model. Display identity
+  and derived information as content unless editing serves a purpose. Avoid redundant labels,
+  meaningless options, and duplicate choices. Preserve the distinction between inheriting a
+  default and explicitly overriding it when that affects behavior.
+- Keep primary actions and commonly edited settings easy to reach; place secondary details and
+  advanced options after them. Keep destructive actions visually distinct from routine actions.
+- Use consistent icons, concise labels, and separate secondary metadata from the main label.
+  Check long names, truncation, alignment, spacing, and contrast with realistic content. Nested
+  containers and status colors must remain distinguishable.
+- Show warnings for actionable problems; do not flag normal states merely because they rely on
+  something outside the current view. Explain what needs attention. Use deduplicated Sonner toasts
+  for transient failures, including failed
+  saves, and inline messages for field validation. Do not add recovery panels, browser draft
+  storage, or extra save workflows without a requirement for them.
+- Keep local interactions responsive while requests run. A background save or subscription update
+  must not reset selection, close an editor, move the viewport, or overwrite newer edits.
+- Make spatial relationships and interaction feedback match ownership. Layout, connectors,
+  highlighting, and animation should agree on which object or container an action affects.
+  Use brief transitions where they clarify a change and respect reduced-motion preferences.
+- Verify the rendered UI through the affected workflow, including relevant loading, empty, error,
+  selected, and disabled states. Check opening position, scrolling, resizing, and content density
+  when the change can affect them; a successful build does not verify these behaviors.
+
 ## Conventions
 
 - No backward compatibility: delete the old path rather than supporting both.
 - No inline comments narrating flow; JSDoc on exported components and non-obvious edge cases only.
-- The backend is the source of truth — there is no client-side store beyond React context.
-- Always handle loading and offline states; `Alert` for errors, Sonner for toasts.
+- The backend owns authoritative domain state. Keep temporary edits, selection, and pointer state
+  locally as needed; reconcile responses with pending edits. Derive presentation from authoritative
+  data instead of persisting redundant copies of calculated state.
+- Always handle loading and offline states, and distinguish unavailable data from empty data.
+- Never use browser-native `alert`, `confirm`, or `prompt` dialogs, including `beforeunload`
+  confirmation prompts. When needed, use shadcn dialogs styled like the app's creation forms, with
+  explicit actions and Cancel.
