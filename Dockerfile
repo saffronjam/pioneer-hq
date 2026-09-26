@@ -3,6 +3,7 @@ WORKDIR /web
 COPY dashboard/package.json dashboard/bun.lock* ./
 RUN bun install --frozen-lockfile
 COPY dashboard/ .
+COPY api/internal/planner/catalog.json /api/internal/planner/catalog.json
 # The version is stamped in from the outside: .dockerignore excludes .git, so
 # nothing inside the build can derive it.
 ARG VERSION=localbuild
