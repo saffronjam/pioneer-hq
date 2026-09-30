@@ -143,6 +143,13 @@ AGENTS.md files under `api/internal/graph`, `api/internal/store`, `api/pkg/event
   server updates must be reconciled without discarding newer user edits.
 - **The schema is the contract.** Regenerate after editing `api/schema.graphql`.
 
+## Kubernetes ownership
+
+`deploy/kubernetes/base` owns the portable Deployment, Service, application
+configuration and data/assets claims. See `deploy/kubernetes/AGENTS.md`.
+Environment repositories select releases and own namespaces, routing, access
+policies, storage bindings, resource sizing and the asset artifact reference.
+
 ## Versioning and releases
 
 The version is one `VERSION` build arg with two sinks, both fed from the same value: a Vite `define`

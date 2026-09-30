@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pioneer-hq
+  labels:
+    app.kubernetes.io/name: pioneer-hq
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/part-of: pioneer-hq
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: pioneer-hq
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: pioneer-hq
+        app.kubernetes.io/component: dashboard
+        app.kubernetes.io/part-of: pioneer-hq
+    spec:
+      initContainers:
+        - name: seed-assets
+          image: ghcr.io/saffronjam/pioneer-hq-seed:1.3.0
+          envFrom:
+            - configMapRef:
+                name: pioneer-hq
+          volumeMounts:
+            - name: assets
+              mountPath: /assets
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+      containers:
+        - name: pioneer-hq
+          image: ghcr.io/saffronjam/pioneer-hq:1.3.0
+          ports:
+            - containerPort: 8081
+              name: http
+          envFrom:
+            - configMapRef:
+                name: pioneer-hq
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: assets
+              mountPath: /assets
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: pioneer-hq-data
+        - name: assets
+          persistentVolumeClaim:
+            claimName: pioneer-hq-assets
