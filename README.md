@@ -15,7 +15,7 @@
 ---
 
 <div align="center">
-  <img src="docs/images/dashboard.png" alt="Pioneer HQ" width="800">
+  <img src="docs/images/pioneer-hq.webp" alt="Pioneer HQ: dashboard, production, power, map and planner" width="800">
 </div>
 
 A production planner and real-time dashboard for a Satisfactory factory: power circuits and battery banks, production and
